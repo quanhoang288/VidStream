@@ -1,4 +1,4 @@
-# Báo cáo tuần 1
+# Báo cáo tuần 5
 
 ## 1. Media file basics
 - Serving video files
@@ -66,5 +66,6 @@
 <p align="center"> 
     <img src='./flowchart.png'/>
 </p>
+
 ## 5. Video encoding and transcoding
 (Chưa tìm hiểu)

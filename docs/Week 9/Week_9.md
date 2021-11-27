@@ -6,41 +6,21 @@
         <img src='./video-upload.png'/>
     </p>
 
-- Đặc tả các bảng
-    - <b>Assets</b>: Chứa các thông tin về các files được upload bởi user (avatar) hoặc các metadata của video (thumbnail, manifest files)
-    - <b>Comments</b>: Lưu thông tin về nội dung bình luận của 1 user
-    - <b>Notifications</b>: Lưu các thông báo của tương ứng với 1 video
-    - <b>Users</b>: Chứa các thông tin cá nhân của user, các người dùng đang theo dõi (following) và đang được theo dõi (followers). Ngoài ra bảng Users còn chứa trường avatar là id của đối tượng biểu diễn cho ảnh đại diện của người dùng được lưu trữ phía server
-    - <b>Videos</b>: Lưu các metadata của video, ngoài ra bảng Videos còn chứa thông tin về lượt likes và số lượng comments của video
+- Các phần cần bổ sung
+    - Xử lý response trả về từ phía server
+    - Popup thông báo khi có lỗi hoặc đăng video thành công
+    - Xử lí sự kiện đăng bài. Hiện tại mới chỉ test upload video khi nhấn chọn tập tin
+    - CSS thêm phần giao diện
 
-## 2. Khởi tạo project React + Node + MongoDB
-- Cấu trúc project
-    <p align="center"> 
-        <img src='./project-structure.png'/>
-    </p>
-- Khởi tạo MongoDB:
+## 2. Video uploading - Backend
+- Các công việc đã thực hiện:
     
-    - <b>Assets</b>:
-        <p align="center"> 
-            <img src='./asset-schema.png'/>
-        </p>
+    - Validate file input từ phía client gửi lên (kiểm tra extension, file size)
+    - Tạo thumbnail cho video (Hiện tại đang lấy giây đầu tiên làm thumbnail)
+    - Encode video (tạo thành 3 độ phân giải khác nhau và tách ra thành nhiều chunks nhỏ, kèm theo file manifest sau khi encode xong). Sau quá trình encode video các file được sinh ra được lưu tạm thời vào folder tmp ở phía server
+    - Upload các files được tạo ra ở bước trước lên cloud. Hiện tại đang sử dụng google drive để lưu trữ files. Sau khi upload files lên cloud thành công tiến hành xóa các files lưu tạm thời ở phía server
 
-    - <b>Comments</b>:
-        <p align="center"> 
-            <img src='./comment-schema.png'/>
-        </p>
+- Công việc cần bổ sung:
 
-    - <b>Notifications</b>:
-        <p align="center"> 
-            <img src='./notification-schema.png'/>
-        </p>
-
-    - <b>Users</b>:
-        <p align="center"> 
-            <img src='./user-schema.png'/>
-        </p>
-
-    - <b>Videos</b>:
-        <p align="center"> 
-            <img src='./video-schema.png'/>
-        </p>
+    - Xử lí lưu các thông tin liên quan đến video vào CSDL. Hiện tại mới thực hiện xử lý và upload video lên cloud storage
+    - Xử lí logic upload video. Hiện tại việc upload video sẽ có 2 bước: Upload video lên trước sau đó client tiếp tục điền các thông tin liên quan đến video (chú thích, giới hạn người xem), tuy nhiên phía server đang thực hiện upload video lên drive luôn -> có thể phải update lại  khi người dùng hủy không đăng video nữa

@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Navbar from '../../components/Navbar/Navbar';
-import { Button, ButtonGroup, Container, InputLabel, Grid, Select, TextField, Typography } from '@material-ui/core';
+import { Button, ButtonGroup, Container, FormControl, InputLabel, Grid, Select, TextField, Typography } from '@material-ui/core';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import { API_BASE_URL } from '../../configs';
+import './VideoUpload.css';
+import { videoApi } from '../../apis';
+
 const VideoUpload = props => {
 
     const videoRestrictions = [
@@ -23,103 +25,104 @@ const VideoUpload = props => {
 
     const handleFileInput = async (e) => {
         const video = e.target.files[0];
-        
-        const formData = new FormData();
-        formData.append('video', video);
-        
+
         try {
-            const response = await fetch(`${API_BASE_URL}/videos/upload`, {
-                method: 'POST',
-                body: formData
-            });
-            console.log(response);
+            const uploadResult = await videoApi.uploadFile(video);
+            console.log(uploadResult.data);
         } catch (err) {
             console.log(err);
         }
+        
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        console.log('submiting');
     }
 
     return (
         <div>
             <Navbar/>
-            <div style={{display: 'flex', justifyContent: 'center', marginTop: "50px"}}>
-                <Grid container spacing={2} style={{width:"80%", borderRadius: "20px", border:"1px dotted green", backgroundColor: "#ffffff"}}>
-                    <Grid item xs={12} style={{border: "2px dotted yellow"}}>
-                        <Typography variant='h4'>Tải video lên</Typography> 
-                        <p style={{fontSize: "24px"}}>Đăng video vào tài khoản của bạn</p>
-                    </Grid>
-                    <Grid item xs={3} style={{flexGrow: 1}}>
-                        <div className="upload" style={{border: '1px dotted red', textAlign: 'center'}}>
-                            <div style={{textAlign: "center"}}>
-                                <CloudUploadIcon fontSize="large"/>
-                            </div>
-                            
-                            <Typography variant='h6'>Chọn video để tải lên</Typography> 
-
-                            <p>Hoặc kéo và thả tệp tin</p>
-                            <Button 
-                                variant='contained' 
-                                color='secondary'
-                                component='label'
-                            >
-                                <Typography>Chọn tập tin</Typography> 
-                                <input type="file" name="video" onChange={handleFileInput} hidden/>
-                            </Button>
-                        </div>
-                    </Grid>
-
-                    <Grid item xs={1}/>
-
-                    <Grid item xs={7}>
-                        <form action="">
-                            <TextField 
-                                label="Chú thích" 
-                                margin="normal"
-                                fullWidth
-                                variant="standard"
-                                InputLabelProps={{
-                                    shrink: true,
-                                    style: {
-                                        fontSize: 20,
-                                        fontWeight: "bold",
-                                    }
-                                }}
-                            />
-
-                            <InputLabel htmlFor="restrict-options" style={{marginBottom: "5px", fontWeight: "bold"}}>Ai có thể xem video này</InputLabel>
-                            <Select
-                                native
-                                inputProps={{
-                                    name: 'restrict-options',
-                                    id: 'restrict-options',
-                                }}
-                                fullWidth
-                                style={{
-                                    marginBottom: "50px"
-                                }}
-                            >
-                                {videoRestrictions.map(res => (
-                                        <option key={res.value} value={res.value}>
-                                            {res.label}
-                                        </option>
-                                ))}
-                            </Select>
-
+            <div className="grid__wrapper">
+                <div className="grid__container">
+                    <Grid container spacing={1}>
                         
-                            <div style={{textAlign: 'center'}}>
-                                <Button variant="contained" color="default" style={{marginRight: '20px'}}>Hủy</Button>
-                                <Button variant="contained" color="secondary">Đăng</Button>
+                        <Grid item xs={12}>
+                            <div className="video__upload__title">
+                                <Typography variant="h4" >Tải video lên</Typography>
+                                <Typography variant="h5">Đăng video vào tài khoản của bạn</Typography>
                             </div>
+                        </Grid>
+                        
+                        <Grid container className="video__upload__content">
+                        
+                            <Grid item xs={3} className="video__select__grid">
+                                <div className="video__upload__select">
+                                    <div className="video__upload__instruction">
+                                        <CloudUploadIcon fontSize="large"/>                                
+                                        <Typography variant="h6" >Chọn video để tải lên</Typography>
+                                        <Typography className="video__upload__mimetype">MP4 hoặc Webm</Typography>
+                                        <Typography className="video__upload__duration">Tối đa 5 phút</Typography>
+                                        <Typography className="video__upload__size">Nhỏ hơn 2 GB</Typography>
+                                    </div>
+                                    <Button 
+                                        variant='contained' 
+                                        color='secondary'
+                                        component='label'
+                                    >
+                                        <Typography>Chọn tập tin</Typography> 
+                                        <input type="file" name="video" onChange={handleFileInput} hidden/>
+                                    </Button>
+                                </div>
+                            </Grid>
 
-                        </form>
+                            <Grid item xs={1}/>
+
+                            <Grid item xs={8}>
+                                <form onSubmit={handleSubmit}>
+                                    <TextField 
+                                        label="Chú thích" 
+                                        margin="normal"
+                                        fullWidth
+                                        variant="standard"
+                                        InputLabelProps={{
+                                            shrink: true,
+                                            className: "form__input__label"
+                                        }}
+                                        className="video__description"
+                                    />
+                                    <FormControl fullWidth>
+                                        <InputLabel htmlFor="restrict-options" className="form__input__label">Ai có thể xem video này</InputLabel>
+                                        <Select
+                                            native
+                                            inputProps={{
+                                                name: 'restrict-options',
+                                                id: 'restrict-options',
+                                            }}
+                                            className="video__restriction"
+                                        >
+                                            {videoRestrictions.map(res => (
+                                                <option key={res.value} value={res.value}>
+                                                    {res.label}
+                                                </option>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                
+                                    <div className="upload__button__group">
+                                        <Button variant="contained" color="default" id="cancel__btn">Hủy</Button>
+                                        <Button variant="contained" color="secondary">Đăng</Button>
+                                    </div>
+
+                                </form>
+                            </Grid>
+                            {/* <Grid item xs={1}/> */}
+                        </Grid>
                     </Grid>
-                    <Grid item xs={1}/>
-
-                </Grid>
+                </div>
             </div>
         </div>
     );
 };
-
-
 
 export default VideoUpload;

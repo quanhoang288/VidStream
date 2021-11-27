@@ -75,12 +75,11 @@ const uploadFileToDrive = async (filePath, uploadFolderName, mimeType) => {
     let folder = await googleDriveService.searchFolder(uploadFolderName);
     if (!folder) {
         try {
-
+            folder = await googleDriveService.createFolder(uploadFolderName);
         } catch (err) {
             console.log(err);
             throw new Error('Error creating new folder in google drive!');
         }
-        folder = await googleDriveService.createFolder(uploadFolderName);
     }
 
     const fileName = path.basename(filePath);

@@ -40,10 +40,10 @@ module.exports = class GoogleDriveService {
         },
         (err, res) => {
           if (err) {
-            return reject(err);
+            reject(err);
           }
 
-          return resolve(res.data.files ? res.data.files[0] : null);
+          resolve(res.data.files ? res.data.files[0] : null);
         },
       );
     });

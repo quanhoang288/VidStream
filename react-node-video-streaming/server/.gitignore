@@ -25,4 +25,4 @@ yarn-error.log*
 .env
 *lock*
 tmp/
-uploads/
+assets/

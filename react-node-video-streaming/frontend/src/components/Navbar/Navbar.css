@@ -1,18 +1,26 @@
 .app__title {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .search__wrapper {
-    padding: 1px 4px;
-    display: flex;
-    align-items: center;
-    width: 100%;
+  padding: 1px 4px;
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 
 .search__icon {
-    padding: 10px;
+  padding: 10px;
 }
 
 .icon__group {
-    display: flex;
+  display: flex;
+}
+
+.mr__2 {
+  margin-right: 2rem !important;
+}
+
+.vertical__center {
+  align-self: center;
 }

@@ -4,20 +4,23 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
-import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import { Grid, Paper } from '@material-ui/core';
+import { Grid, Paper, Button, Link } from '@material-ui/core';
 import './Navbar.css';
+import { useDispatch, useSelector } from 'react-redux';
+import AuthHandler from '../../containers/AuthHandler/AuthHandler';
+import { showModal } from '../../redux/actions/modalActions';
 
 export default function Navbar() {
   const [anchorEl, setAnchorEl] = useState(null);
-
   const isMenuOpen = Boolean(anchorEl);
+  const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -43,9 +46,46 @@ export default function Navbar() {
     </Menu>
   );
 
+  const renderGuestNavbarOptions = (
+    <>
+      <Link href="#" variant="body1" className="mr__2 vertical__center ">
+        Tải lên
+      </Link>
+      <Button
+        variant="contained"
+        color="secondary"
+        size="medium"
+        onClick={() => dispatch(showModal())}
+      >
+        Đăng nhập
+      </Button>
+    </>
+  );
+
+  const renderAuthenticatedNavbarOptions = (
+    <>
+      <IconButton color="inherit">
+        <CloudUploadIcon />
+      </IconButton>
+      <IconButton color="inherit">
+        <NotificationsIcon />
+      </IconButton>
+      <IconButton
+        edge="end"
+        aria-controls={menuId}
+        aria-haspopup="true"
+        onClick={handleProfileMenuOpen}
+        color="inherit"
+      >
+        <AccountCircle />
+      </IconButton>
+    </>
+  );
+
   return (
     <div>
-      <AppBar position="sticky" color="transparent">
+      <AuthHandler />
+      <AppBar position="fixed" color="transparent">
         <Toolbar>
           <Grid container style={{ alignItems: 'center' }}>
             <Grid item xs={1} />
@@ -74,27 +114,9 @@ export default function Navbar() {
             <Grid item xs={2} />
             <Grid item>
               <div className="icon__group">
-                <IconButton color="inherit">
-                  <CloudUploadIcon />
-                </IconButton>
-                <IconButton
-                  aria-label="show 17 new notifications"
-                  color="inherit"
-                >
-                  <Badge badgeContent={17} color="secondary">
-                    <NotificationsIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleProfileMenuOpen}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
+                {user
+                  ? renderAuthenticatedNavbarOptions
+                  : renderGuestNavbarOptions}
               </div>
             </Grid>
           </Grid>

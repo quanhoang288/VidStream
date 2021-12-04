@@ -9,9 +9,9 @@ import {
   Typography,
 } from '@material-ui/core';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import Navbar from '../../components/Navbar/Navbar';
 import './VideoUpload.css';
 import { videoApi } from '../../apis';
+import Main from '../../containers/Main/Main';
 
 function VideoUpload() {
   const videoRestrictions = [
@@ -46,8 +46,7 @@ function VideoUpload() {
   };
 
   return (
-    <div>
-      <Navbar />
+    <Main>
       <div className="grid__wrapper">
         <div className="grid__container">
           <Grid container spacing={1}>
@@ -149,7 +148,7 @@ function VideoUpload() {
           </Grid>
         </div>
       </div>
-    </div>
+    </Main>
   );
 }
 

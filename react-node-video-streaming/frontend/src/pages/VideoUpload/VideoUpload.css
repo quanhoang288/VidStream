@@ -1,75 +1,77 @@
 .grid__wrapper {
-    height: 90vh;
-    display: flex;
-    justify-content: center;
-    padding-top: 40px;
-    background-color: #fafafa;
+  height: 80vh;
+  display: flex;
+  justify-content: center;
+  padding-top: 100px;
+  background-color: #fafafa;
 }
 
 .grid__container {
-    width: 80%;
-    height: 100%;
-    border-radius: 20px;
-    background-color: #ffffff;
-    padding: 20px;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  width: 80%;
+  height: 100%;
+  border-radius: 20px;
+  background-color: #ffffff;
+  padding: 20px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
 
 .video__upload__content {
-    margin-top: 40px;
+  margin-top: 40px;
 }
 
 .video__upload__title {
-    margin-bottom: 40px;
+  margin-bottom: 40px;
 }
 
 .video__upload__title h4 {
-    margin-bottom: 10px;
-    font-weight: bold;
+  margin-bottom: 10px;
+  font-weight: bold;
 }
 
 .video__select__grid {
-    height: 100%;
+  height: 100%;
 }
 
 .video__upload__select {
-    border: 2px dashed rgba(22, 24, 35, 0.2);    
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    padding: 10px;
-    height: 100%;
+  border: 2px dashed rgba(22, 24, 35, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 10px;
+  height: 100%;
 }
 
 .video__upload__instruction {
-    text-align: center;
-    margin-bottom: 20px;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 .upload__button__group {
-    text-align: center;
+  text-align: center;
 }
 
 .upload__button__group #cancel__btn {
-    margin-right: 20px;
+  margin-right: 20px;
 }
 
 .form__input__label {
-    font-size: 24px !important;
-    font-weight: bold !important;
-    margin-bottom: 5px !important;
+  font-size: 24px !important;
+  font-weight: bold !important;
+  margin-bottom: 5px !important;
 }
 
 .video__description {
-    margin-bottom: 20px !important;
+  margin-bottom: 20px !important;
 }
 
 .video__restriction {
-    margin-top: 30px !important;
-    margin-bottom: 50px !important;
+  margin-top: 30px !important;
+  margin-bottom: 50px !important;
 }
 
-.video__restriction select, option {
-    font-size: 18px !important;
+.video__restriction select,
+option {
+  font-size: 18px !important;
 }

@@ -11,17 +11,17 @@ export default class Streamer {
     this.registerMediaSourceEvents();
   }
 
-  initVideoElementSource = () => {
+  initVideoElementSource() {
     this.videoElm.src = URL.createObjectURL(this.mediaSource);
-  };
+  }
 
-  registerMediaSourceEvents = () => {
+  registerMediaSourceEvents() {
     this.mediaSource.addEventListener('sourceopen', this.sourceOpen, {
       once: true,
     });
-  };
+  }
 
-  sourceOpen = () => {
+  sourceOpen() {
     URL.revokeObjectURL(this.videoElm.src);
     const sourceBuffer = this.mediaSource.addSourceBuffer(
       'video/mp4; codecs="avc1.42E01E, mp4a.40.2"',
@@ -42,16 +42,16 @@ export default class Streamer {
           once: true,
         });
       });
-  };
+  }
 
-  updateEnd = () => {
+  updateEnd() {
     // Fetch the next segment of video when user starts playing the video.
     this.videoElm.addEventListener('playing', this.fetchNextSegment, {
       once: true,
     });
-  };
+  }
 
-  fetchNextSegment = () => {
+  fetchNextSegment() {
     if (this.finished) {
       return;
     }
@@ -76,23 +76,25 @@ export default class Streamer {
         }
       })
       .catch((err) => console.log(err));
-  };
+  }
 
-  getRequestRange = () => ({
-    fromByte: this.lastByteRequested + 1,
-    toByte: this.lastByteRequested + this.chunkSize,
-  });
+  getRequestRange() {
+    return {
+      fromByte: this.lastByteRequested + 1,
+      toByte: this.lastByteRequested + this.chunkSize,
+    };
+  }
 
-  updateLastByteReceived = () => {
+  updateLastByteReceived() {
     this.lastByteRequested += this.chunkSize;
-  };
+  }
 
-  static isLastChunk = (res) => {
+  static isLastChunk(res) {
     const contentRange = res.headers.get('Content-Range');
     const byteRange = contentRange.split(' ')[1];
     const parts = byteRange.split('/');
     const lastChunkByte = parts[0].split('-')[1];
     const fileSize = parts[1];
     return lastChunkByte + 1 === fileSize;
-  };
+  }
 }

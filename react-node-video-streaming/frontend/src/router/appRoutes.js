@@ -1,12 +1,19 @@
-import VideoUpload from '../pages/VideoUpload/VideoUpload';
+// import VideoUpload from '../pages/VideoUpload/VideoUpload';
 import Home from '../pages/Home/Home';
+import Profile from '../pages/Profile/Profile';
 
 import routes from '../constants/route';
 
 export default [
   {
     path: routes.VIDEO_UPLOAD,
-    component: VideoUpload,
+    component: Profile,
+    exact: true,
+    isPrivate: false,
+  },
+  {
+    path: routes.PROFILE,
+    component: Profile,
     exact: true,
     isPrivate: false,
   },

@@ -8,7 +8,6 @@ import PrivateRoute from './PrivateRoute';
 function AppRouter() {
   const publicRoutes = appRoutes.filter((route) => !route.isPrivate);
   const privateRoutes = appRoutes.filter((route) => route.isPrivate);
-
   return (
     <Router>
       <Switch>

@@ -80,4 +80,23 @@ userController.login = async (req, res) => {
   }
 };
 
+userController.show = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await UserModel.findById(userId).populate({
+      path: 'avatar',
+      select: '_id fileName',
+      model: 'Assets',
+    });
+    return res.status(httpStatus.OK).json({
+      user,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+      message: 'Error getting user information',
+    });
+  }
+};
+
 module.exports = userController;

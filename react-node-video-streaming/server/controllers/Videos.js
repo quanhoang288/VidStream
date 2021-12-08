@@ -80,4 +80,25 @@ videoController.upload = async (req, res) => {
   }
 };
 
+videoController.findByUserId = async (req, res) => {
+  try {
+    const { userId } = req.query;
+    const videoGallery = await VideoModel.find({ uploadedBy: userId }).populate(
+      {
+        path: 'thumbnail',
+        select: 'fileName',
+        model: 'Assets',
+      },
+    );
+    return res.status(httpStatus.OK).json({
+      videoGallery,
+    });
+  } catch (err) {
+    console.err(err.message);
+    res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .json({ error: 'Error getting user videos' });
+  }
+};
+
 module.exports = videoController;

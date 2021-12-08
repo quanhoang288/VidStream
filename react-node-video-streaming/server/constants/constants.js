@@ -15,6 +15,10 @@ const VIDEO_STATUS_DRAFT = 'draft';
 const VIDEO_STATUS_PUBLISHED = 'published';
 const VIDEO_STATUS_DELETED = 'deleted';
 
+// video access mode
+const VIDEO_MODE_PUBLIC = 'public';
+const VIDEO_MODE_PRIVATE = 'private';
+
 module.exports = {
   ASSET_TYPE_AVATAR,
   ASSET_TYPE_CHUNK,
@@ -25,4 +29,6 @@ module.exports = {
   VIDEO_STATUS_DRAFT,
   VIDEO_STATUS_PUBLISHED,
   VIDEO_STATUS_DELETED,
+  VIDEO_MODE_PRIVATE,
+  VIDEO_MODE_PUBLIC,
 };

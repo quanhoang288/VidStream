@@ -7,7 +7,7 @@ const {
   ASSET_TYPE_CHUNK,
   ASSET_TYPE_MANIFEST,
   ASSET_TYPE_THUMBNAIL,
-  VIDEO_STATUS_DRAFT,
+  VIDEO_STATUS_PUBLISHED,
 } = require('../constants/constants');
 const { encode, generateThumbnail } = require('../services/ffmpeg');
 const { uploadFolderToDrive } = require('../utils/cloudUpload');
@@ -18,6 +18,7 @@ const videoController = {};
 videoController.upload = async (req, res) => {
   try {
     const videoFile = req.file;
+    const { userId, description, restriction } = req.body;
 
     // generate thumbnail and encode video in DASH format
     const thumbnail = await generateThumbnail(videoFile);
@@ -49,9 +50,12 @@ videoController.upload = async (req, res) => {
     const savedThumbnail = await thumbnailAsset.save();
 
     const video = new VideoModel({
+      uploadedBy: userId,
+      description,
+      restriction,
       manifestFile: savedManifest._id,
       thumbnail: savedThumbnail._id,
-      status: VIDEO_STATUS_DRAFT,
+      status: VIDEO_STATUS_PUBLISHED,
     });
     const savedVideo = await video.save();
 

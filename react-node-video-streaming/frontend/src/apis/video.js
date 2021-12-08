@@ -1,8 +1,14 @@
 import api from './api';
 
-const uploadFile = async (file) => {
+const upload = async (data) => {
+  const { videoFile, description, restriction, userId } = data;
+
   const formData = new FormData();
-  formData.append('video', file);
+  formData.append('video', videoFile);
+  formData.append('description', description);
+  formData.append('restriction', restriction);
+  formData.append('userId', userId);
+
   const uploadResult = await api({
     method: 'POST',
     url: '/videos/upload',
@@ -11,4 +17,4 @@ const uploadFile = async (file) => {
   return uploadResult;
 };
 
-export { uploadFile };
+export { upload };

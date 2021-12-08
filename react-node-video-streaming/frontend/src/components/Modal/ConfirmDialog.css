@@ -1,0 +1,14 @@
+.dialog__content {
+  padding: 0px 0px !important;
+  max-width: 320px;
+}
+
+.dialog__text {
+  text-align: center;
+  padding: 20px 24px;
+}
+
+.confirm__button__group {
+  display: flex;
+  flex-direction: column;
+}

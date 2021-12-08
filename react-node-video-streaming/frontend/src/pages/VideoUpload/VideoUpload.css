@@ -59,7 +59,7 @@
 .form__input__label {
   font-size: 24px !important;
   font-weight: bold !important;
-  margin-bottom: 5px !important;
+  margin-bottom: 20px !important;
 }
 
 .video__description {
@@ -74,4 +74,9 @@
 .video__restriction select,
 option {
   font-size: 18px !important;
+}
+
+.video__name {
+  text-align: center;
+  margin-bottom: 20px;
 }

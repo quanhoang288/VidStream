@@ -4,10 +4,13 @@ import { Alert } from '@material-ui/lab';
 import React, { useState } from 'react';
 
 function Toast(props) {
-  const { variant, message, ...rest } = props;
+  const { variant, message, handleClose, ...rest } = props;
   const [open, setOpen] = useState(true);
-  const handleClose = () => {
+  const onClose = () => {
     setOpen(false);
+    if (handleClose) {
+      handleClose();
+    }
   };
   return (
     <Snackbar
@@ -17,7 +20,7 @@ function Toast(props) {
         vertical: 'top',
         horizontal: 'center',
       }}
-      onClose={handleClose}
+      onClose={onClose}
       {...rest}
     >
       <Alert severity={variant} onClose={handleClose}>

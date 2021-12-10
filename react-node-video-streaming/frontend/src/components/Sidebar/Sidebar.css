@@ -1,0 +1,40 @@
+.sidebar__overlay {
+  position: fixed;
+  top: 6rem;
+  width: 300px;
+  height: 100%;
+}
+
+.sidebar__container {
+  /* flex: 0 0 300px; */
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar__container:hover {
+  overflow-y: scroll;
+}
+
+.sidebar__item {
+  padding-left: 0 !important;
+  padding-right: 2rem !important;
+}
+
+.mt__1 {
+  margin-top: 1rem;
+}
+
+@media screen and (max-width: 1230px) {
+  .sidebar__overlay {
+    width: 60px;
+  }
+
+  .sidebar__overlay .MuiListItemText-root,
+  .sidebar__overlay h6 {
+    display: none;
+  }
+
+  .sidebar__container::-webkit-scrollbar {
+    width: 6px;
+  }
+}

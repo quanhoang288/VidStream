@@ -1,0 +1,10 @@
+.home__container {
+  display: flex;
+  padding: 6rem 6rem;
+}
+
+@media screen and (max-width: 1230px) {
+  .home__container {
+    padding-left: 1.3rem;
+  }
+}

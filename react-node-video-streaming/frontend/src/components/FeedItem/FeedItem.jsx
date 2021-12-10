@@ -12,7 +12,7 @@ function FeedItem() {
         <div className="author__info">
           <a href="#" className="author__profile">
             <img
-              src="https://p16-sign-sg.tiktokcdn.com/aweme/100x100/tos-alisg-avt-0068/e2f494ed12dcf61969fe99f2e59d183a.jpeg?x-expires=1639198800&x-signature=ULqM0Co73tKsfp45FwHQLNToFDA%3D"
+              src="https://img.hoidap247.com/picture/answer/20200402/large_1585798495452.jpg"
               alt="Profile"
             />
           </a>

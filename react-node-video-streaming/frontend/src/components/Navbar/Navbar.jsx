@@ -85,7 +85,7 @@ export default function Navbar() {
   return (
     <div>
       <AuthHandler />
-      <AppBar position="fixed" color="transparent">
+      <AppBar position="fixed" color="default">
         <Toolbar>
           <Grid container style={{ alignItems: 'center' }}>
             <Grid item xs={1} />

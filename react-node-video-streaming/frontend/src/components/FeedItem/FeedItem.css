@@ -1,0 +1,63 @@
+.video__feed__item {
+  margin-bottom: 3rem;
+}
+
+.feed__item__content {
+  margin-bottom: 3rem;
+}
+
+.author__info {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 1rem;
+}
+
+.author__profile {
+  margin-right: 1rem;
+}
+
+.author__profile img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+
+.author__name {
+  margin-right: 5rem;
+  color: #000;
+  text-decoration: none;
+}
+
+.feed__caption {
+  font-size: 20px;
+  margin-bottom: 2rem;
+}
+
+.video__action__bar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.action__bar {
+  display: flex;
+  flex-direction: column;
+  margin-left: 0.8rem;
+}
+
+.action__bar span:first-child {
+  color: #000 !important;
+}
+
+.action__bar button {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.action__bar button:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.like__wrapper {
+  margin-bottom: 0.5rem;
+}

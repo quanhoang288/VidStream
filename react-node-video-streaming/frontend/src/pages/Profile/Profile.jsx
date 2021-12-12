@@ -1,12 +1,32 @@
 import React from 'react';
 import SettingsIcon from '@material-ui/icons/Settings';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 import Main from '../../containers/Main/Main';
+import GalleryItem from '../../components/GalleryItem/GalleryItem';
 import './Profile.css';
-// import { Grid } from '@material-ui/core';
 
 function Profile() {
+  // TODO: get video gallery of current user
+  const videoGallery = [
+    {
+      thumbnailUri:
+        'https://images.unsplash.com/photo-1513721032312-6a18a42c8763?w=152&h=152&fit=crop&crop=faces',
+      numLikes: 58,
+      numComments: 10,
+    },
+    {
+      thumbnailUri:
+        'https://images.unsplash.com/photo-1513721032312-6a18a42c8763?w=152&h=152&fit=crop&crop=faces',
+      numLikes: 60,
+      numComments: 20,
+    },
+    {
+      thumbnailUri:
+        'https://images.unsplash.com/photo-1513721032312-6a18a42c8763?w=152&h=152&fit=crop&crop=faces',
+      numLikes: 6230,
+      numComments: 130,
+    },
+  ];
+
   return (
     <Main>
       <div className="main__wrapper">
@@ -44,85 +64,9 @@ function Profile() {
         </div>
 
         <div className="gallery">
-          <div className="gallery__item">
-            <img
-              src="https://images.unsplash.com/photo-1511765224389-37f0e77cf0eb?w=500&h=500&fit=crop"
-              className="gallery__image"
-              alt=""
-            />
-
-            <div className="gallery__item__info">
-              <ul>
-                <li className="gallery__item__likes">
-                  <FavoriteIcon />
-                  56
-                </li>
-                <li className="gallery__item__comments">
-                  <ChatBubbleIcon /> 2
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="gallery__item">
-            <img
-              src="https://images.unsplash.com/photo-1497445462247-4330a224fdb1?w=500&h=500&fit=crop"
-              className="gallery__image"
-              alt=""
-            />
-
-            <div className="gallery__item__info">
-              <ul>
-                <li className="gallery__item__likes">
-                  <FavoriteIcon />
-                  89
-                </li>
-                <li className="gallery__item__comments">
-                  <ChatBubbleIcon /> 5
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="gallery__item">
-            <img
-              src="https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=500&h=500&fit=crop"
-              className="gallery__image"
-              alt=""
-            />
-
-            <div className="gallery__item__info">
-              <ul>
-                <li className="gallery__item__likes">
-                  <FavoriteIcon />
-                  42
-                </li>
-                <li className="gallery__item__comments">
-                  <ChatBubbleIcon /> 1
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="gallery__item">
-            <img
-              src="https://images.unsplash.com/photo-1502630859934-b3b41d18206c?w=500&h=500&fit=crop"
-              className="gallery__image"
-              alt=""
-            />
-
-            <div className="gallery__item__info">
-              <ul>
-                <li className="gallery__item__likes">
-                  <FavoriteIcon />
-                  38
-                </li>
-                <li className="gallery__item__comments">
-                  <ChatBubbleIcon /> 0
-                </li>
-              </ul>
-            </div>
-          </div>
+          {videoGallery.map((video) => (
+            <GalleryItem {...video} />
+          ))}
         </div>
       </div>
     </Main>

@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const UserModel = require('../models/Users');
+const VideoModel = require('../models/Videos');
 const httpStatus = require('../utils/httpStatus');
 const { JWT_SECRET } = require('../configs');
 
@@ -96,6 +97,35 @@ userController.show = async (req, res) => {
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
       message: 'Error getting user information',
     });
+  }
+};
+
+userController.getVideoGallery = async (req, res) => {
+  try {
+    const authorId = req.params.id;
+    const author = await UserModel.findById(authorId).populate({
+      path: 'avatar',
+      select: '_id fileName',
+      model: 'Assets',
+    });
+
+    const videoGallery = await VideoModel.find({
+      uploadedBy: authorId,
+    }).populate({
+      path: 'thumbnail',
+      select: '_id fileName',
+      model: 'Assets',
+    });
+
+    return res.status(httpStatus.OK).json({
+      author,
+      videoGallery,
+    });
+  } catch (err) {
+    console.err(err.message);
+    res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .json({ error: 'Error getting user videos' });
   }
 };
 

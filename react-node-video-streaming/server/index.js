@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const io = require('socket.io')(3000);
+const path = require('path');
 
 const mainRouter = require('./routes');
 const { MONGO_URI, PORT } = require('./configs');
@@ -22,6 +23,8 @@ mongoose
   });
 
 const app = express();
+
+app.use('/public/', express.static(path.join(__dirname, 'assets')));
 
 // use middleware to enable cors
 app.use(cors());

@@ -3,11 +3,12 @@ import Home from '../pages/Home/Home';
 import Profile from '../pages/Profile/Profile';
 
 import routes from '../constants/route';
+import VideoUpload from '../pages/VideoUpload/VideoUpload';
 
 export default [
   {
     path: routes.VIDEO_UPLOAD,
-    component: Profile,
+    component: VideoUpload,
     exact: true,
     isPrivate: false,
   },

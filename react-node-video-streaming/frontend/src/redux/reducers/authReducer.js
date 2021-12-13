@@ -38,7 +38,7 @@ const authReducer = (state = initialState, action) => {
       return {
         ...initialState,
         registerSuccess: true,
-        user: action.playload,
+        user: action.payload,
       };
 
     case authActionTypes.REGISTER_FAILURE:

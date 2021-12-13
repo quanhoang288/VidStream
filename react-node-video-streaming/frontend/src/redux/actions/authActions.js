@@ -16,8 +16,9 @@ const registerSuccess = (user) => ({
   payload: user,
 });
 
-const registerFailure = () => ({
+const registerFailure = (error) => ({
   type: authActionTypes.REGISTER_FAILURE,
+  payload: error,
 });
 
 const loginRequest = () => ({

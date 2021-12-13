@@ -3,6 +3,7 @@ import { authActionTypes } from '../actions/authActions';
 const initialState = {
   isLoggingIn: false,
   isRegistering: false,
+  registerSuccess: false,
   user: null,
   error: null,
 };
@@ -31,6 +32,13 @@ const authReducer = (state = initialState, action) => {
       return {
         ...initialState,
         isRegistering: true,
+      };
+
+    case authActionTypes.REGISTER_SUCCESS:
+      return {
+        ...initialState,
+        registerSuccess: true,
+        user: action.playload,
       };
 
     case authActionTypes.REGISTER_FAILURE:

@@ -8,7 +8,7 @@ import { LOGIN_MODAL, REGISTER_MODAL } from '../../constants';
 import { hideModal } from '../../redux/actions/modalActions';
 import { authActions } from '../../redux/actions';
 import { authApi } from '../../apis';
-import { loginSuccess } from '../../redux/actions/authActions';
+import { loginSuccess, registerSuccess } from '../../redux/actions/authActions';
 import ROUTE from '../../constants/route';
 import { errorMessages } from '../../constants/messages';
 
@@ -102,6 +102,10 @@ function AuthHandler() {
     }
   }, [registerInfo]);
 
+  const handleCloseModal = () => {
+    dispatch(hideModal());
+  };
+
   const handleTextChange = (modalType, name, val) => {
     if (modalType === LOGIN_MODAL) {
       setCredentials({
@@ -159,15 +163,12 @@ function AuthHandler() {
         ...data.user,
         token: data.token,
       };
-      dispatch(loginSuccess(user));
+      dispatch(registerSuccess(user));
+      handleCloseModal();
     } catch (err) {
       console.log(err);
       dispatch(authActions.registerFailure(err.response));
     }
-  };
-
-  const handleCloseModal = () => {
-    dispatch(hideModal());
   };
 
   if (authenticatedUser) {

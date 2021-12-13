@@ -4,10 +4,16 @@ export const authActionTypes = {
   LOGIN_SUCCESS: 'LOGIN_SUCCESS',
   LOGIN_FAILURE: 'LOGIN_FAILURE',
   REGISTER_FAILURE: 'REGISTER_FAILURE',
+  REGISTER_SUCCESS: 'REGISTER_SUCCESS',
 };
 
 const registerRequest = () => ({
   type: authActionTypes.REGISTER_REQUEST,
+});
+
+const registerSuccess = (user) => ({
+  type: authActionTypes.REGISTER_SUCCESS,
+  payload: user,
 });
 
 const registerFailure = () => ({
@@ -34,4 +40,5 @@ export {
   loginSuccess,
   registerRequest,
   registerFailure,
+  registerSuccess,
 };

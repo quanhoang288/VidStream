@@ -23,7 +23,7 @@ function Toast(props) {
       onClose={onClose}
       {...rest}
     >
-      <Alert severity={variant} onClose={handleClose}>
+      <Alert severity={variant} onClose={onClose}>
         {message}
       </Alert>
     </Snackbar>

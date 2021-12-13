@@ -13,7 +13,6 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { Grid, Paper, Button, Link } from '@material-ui/core';
 import './Navbar.css';
 import { useDispatch, useSelector } from 'react-redux';
-import AuthHandler from '../../containers/AuthHandler/AuthHandler';
 import { showModal } from '../../redux/actions/modalActions';
 
 export default function Navbar() {
@@ -84,7 +83,6 @@ export default function Navbar() {
 
   return (
     <div>
-      <AuthHandler />
       <AppBar position="fixed" color="default">
         <Toolbar>
           <Grid container style={{ alignItems: 'center' }}>

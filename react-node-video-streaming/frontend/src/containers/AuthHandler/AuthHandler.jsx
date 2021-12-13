@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Redirect } from 'react-router-dom';
 import Modal from '../../components/Modal/Modal';
 import LoginForm from '../../components/LoginForm/LoginForm';
 import RegisterForm from '../../components/RegisterForm/RegisterForm';
@@ -9,7 +8,6 @@ import { hideModal } from '../../redux/actions/modalActions';
 import { authActions } from '../../redux/actions';
 import { authApi } from '../../apis';
 import { loginSuccess, registerSuccess } from '../../redux/actions/authActions';
-import ROUTE from '../../constants/route';
 import { errorMessages } from '../../constants/messages';
 
 function AuthHandler() {
@@ -29,6 +27,7 @@ function AuthHandler() {
 
   const isModalVisible = useSelector((state) => state.modal.isModalVisible);
   const authenticatedUser = useSelector((state) => state.auth.user);
+
   const dispatch = useDispatch();
 
   const isValidCredentials = () => {
@@ -85,6 +84,16 @@ function AuthHandler() {
     setRegisterFailedBefore(false);
   };
 
+  const handleCloseModal = () => {
+    dispatch(hideModal());
+  };
+
+  useEffect(() => {
+    if (authenticatedUser) {
+      handleCloseModal();
+    }
+  }, [authenticatedUser]);
+
   useEffect(() => {
     if (isModalVisible) {
       setCurModal(LOGIN_MODAL);
@@ -101,10 +110,6 @@ function AuthHandler() {
       validateRegisterInfo();
     }
   }, [registerInfo]);
-
-  const handleCloseModal = () => {
-    dispatch(hideModal());
-  };
 
   const handleTextChange = (modalType, name, val) => {
     if (modalType === LOGIN_MODAL) {
@@ -163,17 +168,19 @@ function AuthHandler() {
         ...data.user,
         token: data.token,
       };
+      console.log(user);
       dispatch(registerSuccess(user));
-      handleCloseModal();
     } catch (err) {
-      console.log(err);
-      dispatch(authActions.registerFailure(err.response));
+      const res = err.response;
+      let errMsg;
+      if (res && res.status === 400) {
+        errMsg = errorMessages.USERNAME_ALREADY_EXIST;
+      } else {
+        errMsg = errorMessages.INTERNAL_SERVER_ERROR;
+      }
+      dispatch(authActions.registerFailure(errMsg));
     }
   };
-
-  if (authenticatedUser) {
-    return <Redirect to={ROUTE.HOME} />;
-  }
 
   return (
     <Modal

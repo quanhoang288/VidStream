@@ -4,6 +4,7 @@ import Layout from '../Layout/Layout';
 import Navbar from '../../components/Navbar/Navbar';
 import Toast from '../../components/Toast/Toast';
 import { successMessages } from '../../constants/messages';
+import AuthHandler from '../AuthHandler/AuthHandler';
 
 function Main({ children }) {
   const authState = useSelector((state) => state.auth);
@@ -16,6 +17,7 @@ function Main({ children }) {
           message={successMessages.REGISTER_SUCCESSFUL}
         />
       )}
+      <AuthHandler />
       <Navbar />
       {children}
     </Layout>

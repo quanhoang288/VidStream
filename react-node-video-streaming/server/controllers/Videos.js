@@ -94,6 +94,12 @@ videoController.getManifestFile = async (req, res) => {
       select: 'id fileName',
       model: 'Assets',
     });
+    if (!video) {
+      return res
+        .status(httpStatus.BAD_REQUEST)
+        .json({ error: 'Video not found' });
+    }
+
     const manifestPath = path.resolve(
       `${ASSET_DIR}/${video.manifestFile.fileName}`,
     );

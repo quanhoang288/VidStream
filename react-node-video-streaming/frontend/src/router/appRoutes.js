@@ -4,6 +4,7 @@ import Profile from '../pages/Profile/Profile';
 
 import routes from '../constants/route';
 import VideoUpload from '../pages/VideoUpload/VideoUpload';
+import TestPage from '../pages/TestPage';
 
 export default [
   {
@@ -21,6 +22,12 @@ export default [
   {
     path: routes.HOME,
     component: Home,
+    exact: true,
+    isPrivate: false,
+  },
+  {
+    path: '/streaming-test',
+    component: TestPage,
     exact: true,
     isPrivate: false,
   },

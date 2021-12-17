@@ -30,6 +30,8 @@ module.exports = {
     ],
     'default-param-last': 0,
     'no-console': 0,
+    'no-param-reassign': 0,
+    'no-await-in-loop': 0,
     'react/jsx-filename-extension': 0,
     'react/jsx-props-no-spreading': 0,
     'react/jsx-one-expression-per-line': 0,

@@ -17,4 +17,11 @@ const upload = async (data) => {
   return uploadResult;
 };
 
-export { upload };
+const getManifestFile = (videoId) => api.get(`/videos/${videoId}/manifest`);
+
+const getChunk = (videoId, chunkName) =>
+  api.get(`/videos/${videoId}/chunks/${chunkName}`, {
+    responseType: 'arraybuffer',
+  });
+
+export { upload, getChunk, getManifestFile };

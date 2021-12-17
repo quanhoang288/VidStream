@@ -63,4 +63,11 @@ module.exports = class GoogleDriveService {
       },
     });
   }
+
+  downloadFile(fileId) {
+    return this.driveClient.files.get({
+      fileId,
+      alt: 'media',
+    });
+  }
 };

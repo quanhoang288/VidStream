@@ -11,4 +11,13 @@ videoRoutes.post(
   asyncWrapper(videoController.upload),
 );
 
+videoRoutes.get(
+  '/:videoId/manifest',
+  asyncWrapper(videoController.getManifestFile),
+);
+
+videoRoutes.get(
+  '/:videoId/chunks/:chunkName',
+  asyncWrapper(videoController.downloadVideoChunk),
+);
 module.exports = videoRoutes;

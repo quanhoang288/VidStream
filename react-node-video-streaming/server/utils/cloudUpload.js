@@ -103,7 +103,19 @@ const uploadFileToDrive = async (filePath, uploadFolderName, mimeType) => {
   return result.data;
 };
 
+const downloadFileFromDrive = async (fileId) => {
+  const googleDriveService = new GoogleDriveService(
+    GOOGLE_DRIVE_CLIENT_ID,
+    GOOGLE_DRIVE_CLIENT_SECRET,
+    GOOGLE_DRIVE_REDIRECT_URI,
+    GOOGLE_DRIVE_REFRESH_TOKEN,
+  );
+
+  return googleDriveService.downloadFile(fileId);
+};
+
 module.exports = {
+  downloadFileFromDrive,
   uploadFileToDrive,
   uploadFolderToDrive,
 };

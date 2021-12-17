@@ -42,14 +42,14 @@ const getSegmentIndexByTime = (representationObject, time) => {
   const segmentTimeline = segmentTemplate.querySelector('SegmentTimeline');
   const segmentElements = [...segmentTimeline.querySelectorAll('S')];
   const timescale = Number(segmentTemplate.getAttribute('timescale'));
-
+  const startNumber = Number(segmentTemplate.getAttribute('startNumber'));
   if (!timescale) return null;
 
   const requestedTimeInTimescale = time * timescale;
 
   let currentStart = 0;
   let currentEnd = 0;
-  let currentIndex = 0;
+  let currentIndex = startNumber;
   let returnIndex = 0;
 
   segmentElements.forEach((elm) => {
@@ -97,6 +97,7 @@ const representationElementToObject = (repElem) => {
     null,
     representation,
   );
+  return representation;
 };
 
 export default class ParserMPD {
@@ -157,7 +158,7 @@ export default class ParserMPD {
     return durationInSeconds;
   }
 
-  queryRepresentation(repQuery, contentType, lang = null) {
+  queryRepresentations(repQuery, contentType, lang = null) {
     let adaptationSetQuery = `AdaptationSet[contentType="${contentType}"]`;
     if (lang) adaptationSetQuery += `[lang="${lang}"]`;
 

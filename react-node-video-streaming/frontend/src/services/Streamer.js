@@ -80,6 +80,16 @@ export default class Streamer {
     this.initializeStream();
   }
 
+  play() {
+    const HAVE_NOTHING = 0;
+    if (this.videoElm.readyState === HAVE_NOTHING) {
+      console.log('data not loaded yet');
+      this.videoElm.addEventListener('loadeddata', this.play, { once: true });
+    } else {
+      this.videoElm.play();
+    }
+  }
+
   async initializeStream() {
     await this.initializeMediaSource();
 
@@ -111,7 +121,7 @@ export default class Streamer {
         representations[streamType][0],
       );
       this.stream.buffer.sourceBuffers[streamType] =
-        this.initializeBuffers(mimeString);
+        this.initializeSourceBuffer(mimeString);
     });
 
     this.bufferAhead();
@@ -122,7 +132,7 @@ export default class Streamer {
       if (!this.stream.buffer.throttled) this.bufferAhead();
     });
 
-    this.videoElm.addEventListener('seek', () => {
+    this.videoElm.addEventListener('seeking', () => {
       this.unthrottleBuffer();
       this.bufferAhead();
     });
@@ -202,7 +212,14 @@ export default class Streamer {
   initializeSourceBuffer(mimeString) {
     const sourceBuffer =
       this.stream.buffer.mediaSource.addSourceBuffer(mimeString);
+    sourceBuffer.mode = 'sequence';
+    console.log(sourceBuffer);
 
+    console.log('mimeString: ', mimeString);
+    console.log(
+      'mime type supported: ',
+      MediaSource.isTypeSupported(mimeString),
+    );
     sourceBuffer.dataQueue = {
       internal: {
         entries: [],
@@ -217,10 +234,14 @@ export default class Streamer {
       },
 
       step() {
-        const data = this.internel.entries.shift();
+        const data = this.internal.entries.shift();
         if (data) {
+          console.log('data', data);
+          console.log('timestamp offset: ', sourceBuffer.timestampOffset);
           this.internal.updating = true;
           sourceBuffer.appendBuffer(data);
+          console.log('buffered: ', sourceBuffer.buffered);
+          console.log('appended!');
         }
       },
     };
@@ -230,6 +251,7 @@ export default class Streamer {
         files: [],
         bufferedFiles: new Set(),
         reading: false,
+        videoId: this.videoId,
       },
 
       add(fileObj) {
@@ -249,9 +271,9 @@ export default class Streamer {
         this.internal.reading = true;
         const startTime = performance.now();
 
-        videoApi.getChunk(this.videoId, fileName).then(async (res) => {
+        videoApi.getChunk(this.internal.videoId, fileName).then((res) => {
           const chunkData = res.data;
-          const chunkSize = res.headers.ContentType;
+          const chunkSize = res.headers['content-type'];
 
           const minSizeForDownlinkMeasurement = 10000;
 
@@ -271,43 +293,6 @@ export default class Streamer {
           this.internal.reading = false;
           this.step();
         });
-
-        // videoApi.getChunk(this.videoId, fileName).then(async (res) => {
-        //   const reader = res.getReader();
-        //   const readChunk = async () => {
-        //     const { value, done } = await reader.read();
-        //     return [value, done];
-        //   };
-
-        //   let data;
-        //   let done;
-
-        //   do {
-        //     const startTime = performance.now();
-
-        //     [data, done] = await readChunk();
-
-        //     const minSizeForDownlinkMeasurement = 10000;
-        //     if (data && data.length >= minSizeForDownlinkMeasurement) {
-        //       const elapsedInSecons = (performance.now() - startTime) / 1000;
-        //       const downlinkInBits = Math.round(
-        //         (data.length / elapsedInSecons) * 8,
-        //       );
-        //       const downlinkInMBits = downlinkInBits / 1000000;
-        //       const downlinkEvent = new CustomEvent('downlink', {
-        //         detail: downlinkInMBits,
-        //       });
-        //       document.body.dispatchEvent(downlinkEvent);
-        //     }
-
-        //     if (!done) {
-        //       sourceBuffer.enqueueAppendBuffer(data);
-        //     }
-        //   } while (!done);
-
-        //   this.internal.reading = false;
-        //   this.step();
-        // });
       },
     };
 
@@ -358,14 +343,14 @@ export default class Streamer {
 
     streamTypes.forEach((streamType) => {
       const buffer = this.stream.buffer.sourceBuffers[streamType];
-      const bufferHealth = this.getBufferHealth(this);
+      const bufferHealth = this.getBufferHealth(buffer);
       if (!bufferHealth.isHealthy) {
         const representation = currentRepresentations[streamType];
         const chunkIndex = representation.getSegmentIndexByTime(
           bufferHealth.bufferEndTime,
         );
 
-        if (chunkIndex) {
+        if (chunkIndex !== null) {
           const lastRepresentationId = lastRepresentationsIds[streamType];
           const filesToBuffer = [];
 
@@ -392,6 +377,8 @@ export default class Streamer {
               fileName: representation.getSegmentByIndex(index),
             });
           });
+
+          // console.log('files to buffer: ', filesToBuffer);
 
           filesToBuffer.map((fileObj) => buffer.enqueueFile(fileObj));
         }

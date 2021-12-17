@@ -1,7 +1,8 @@
 export default class Streamer {
-  constructor(videoElm) {
-    this.mediaSource = new MediaSource();
+  constructor(videoElm, videoId) {
     this.videoElm = videoElm;
+    this.videoId = videoId;
+    this.mediaSource = new MediaSource();
     this.lastByteRequested = -1;
     this.chunkSize = 500000;
     this.finished = false;

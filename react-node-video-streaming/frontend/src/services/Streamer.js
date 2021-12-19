@@ -148,7 +148,9 @@ export default class Streamer {
 
   getRepresentationsByBandwidth() {
     const representations = {
-      audio: this.stream.media.representations.audio[0] || null,
+      audio: this.stream.media.representations.audio
+        ? this.stream.media.representations.audio[0] || null
+        : null,
       video: null,
     };
 
@@ -212,14 +214,7 @@ export default class Streamer {
   initializeSourceBuffer(mimeString) {
     const sourceBuffer =
       this.stream.buffer.mediaSource.addSourceBuffer(mimeString);
-    sourceBuffer.mode = 'sequence';
-    console.log(sourceBuffer);
 
-    console.log('mimeString: ', mimeString);
-    console.log(
-      'mime type supported: ',
-      MediaSource.isTypeSupported(mimeString),
-    );
     sourceBuffer.dataQueue = {
       internal: {
         entries: [],
@@ -237,10 +232,8 @@ export default class Streamer {
         const data = this.internal.entries.shift();
         if (data) {
           console.log('data', data);
-          console.log('timestamp offset: ', sourceBuffer.timestampOffset);
           this.internal.updating = true;
           sourceBuffer.appendBuffer(data);
-          console.log('buffered: ', sourceBuffer.buffered);
           console.log('appended!');
         }
       },
@@ -252,9 +245,11 @@ export default class Streamer {
         bufferedFiles: new Set(),
         reading: false,
         videoId: this.videoId,
+        stream: this.stream,
       },
 
       add(fileObj) {
+        console.log('buffering file: ', fileObj.fileName);
         if (!fileObj.force && this.internal.bufferedFiles.has(fileObj.id))
           return;
 
@@ -274,6 +269,7 @@ export default class Streamer {
         videoApi.getChunk(this.internal.videoId, fileName).then((res) => {
           const chunkData = res.data;
           const chunkSize = res.headers['content-type'];
+          console.log('downloaded: ', fileName);
 
           const minSizeForDownlinkMeasurement = 10000;
 
@@ -297,9 +293,14 @@ export default class Streamer {
     };
 
     sourceBuffer.addEventListener('updateend', (e) => {
+      console.log('update end');
+      console.log('source buffer after appending: ', sourceBuffer);
+
       e.target.dataQueue.internal.updating = false;
       e.target.dataQueue.step();
     });
+
+    sourceBuffer.addEventListener('error', (e) => console.log(e));
 
     sourceBuffer.enqueueAppendBuffer = sourceBuffer.dataQueue.append.bind(
       sourceBuffer.dataQueue,
@@ -342,6 +343,7 @@ export default class Streamer {
     const { streamTypes, lastRepresentationsIds } = this.stream.media;
 
     streamTypes.forEach((streamType) => {
+      console.log('current stream type: ', streamType);
       const buffer = this.stream.buffer.sourceBuffers[streamType];
       const bufferHealth = this.getBufferHealth(buffer);
       if (!bufferHealth.isHealthy) {
@@ -378,7 +380,7 @@ export default class Streamer {
             });
           });
 
-          // console.log('files to buffer: ', filesToBuffer);
+          console.log('files to buffer: ', filesToBuffer);
 
           filesToBuffer.map((fileObj) => buffer.enqueueFile(fileObj));
         }

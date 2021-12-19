@@ -66,6 +66,10 @@ export default (parser, opts = {}) => {
       representations[contentType] =
         representations[contentType].filter(canPlayFilter);
     } while (representations[contentType].length === 0 && query);
+
+    if (representations[contentType].length === 0) {
+      delete representations[contentType];
+    }
   });
 
   if (representations.video.length === 0) {

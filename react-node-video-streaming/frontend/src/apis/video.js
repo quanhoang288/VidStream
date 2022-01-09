@@ -17,6 +17,12 @@ const upload = async (data) => {
   return uploadResult;
 };
 
+const getInfo = (videoId) => api.get(`/videos/${videoId}`);
+
+const getComments = (videoId) => api.get(`/videos/${videoId}/comments`);
+
+const getContent = (videoId) => api.get(`/videos/${videoId}/stream`);
+
 const getManifestFile = (videoId) => api.get(`/videos/${videoId}/manifest`);
 
 const getChunk = (videoId, chunkName) =>
@@ -24,4 +30,4 @@ const getChunk = (videoId, chunkName) =>
     responseType: 'arraybuffer',
   });
 
-export { upload, getChunk, getManifestFile };
+export { upload, getChunk, getManifestFile, getInfo, getComments, getContent };

@@ -84,13 +84,23 @@ userController.login = async (req, res) => {
 userController.show = async (req, res) => {
   try {
     const userId = req.params.id;
-    const user = await UserModel.findById(userId).populate({
-      path: 'avatar',
-      select: '_id fileName',
-      model: 'Assets',
-    });
+    const user = await UserModel.findById(userId)
+      .select('_id username followers following')
+      .populate({
+        path: 'avatar',
+        select: '_id fileName',
+        model: 'Assets',
+      })
+      .populate('followers')
+      .populate('following');
+
+    const numUploadedVideos = await VideoModel.count({ uploadedBy: userId });
+
     return res.status(httpStatus.OK).json({
-      user,
+      user: {
+        ...user.toObject(),
+        numUploadedVideos,
+      },
     });
   } catch (err) {
     console.error(err);

@@ -1,0 +1,146 @@
+.video__detail__container {
+  display: flex;
+  flex-direction: row;
+}
+
+.video__player__container {
+  width: 70%;
+  height: 100vh;
+  position: relative;
+}
+
+.video__meta__info {
+  flex: 1;
+}
+
+.info__container {
+  padding: 0 25px;
+}
+
+.video__author__info {
+  display: flex;
+  flex-direction: row;
+  padding: 10px 0;
+}
+
+.video__author__info .author__name {
+  flex: 1;
+}
+
+.author__name > span {
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 25px;
+}
+
+.video__item__description {
+  font-size: 16px;
+  line-height: 22px;
+  padding-bottom: 10px;
+}
+
+.like__comment__button__group > div:first-child {
+  margin-right: 24px;
+}
+
+.like__comment__button__group {
+  display: flex;
+}
+
+.like__comment__button__group span:first-child {
+  color: #000 !important;
+}
+
+.like__comment__button__group button {
+  margin-right: 10px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.like__comment__button__group button:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.comment__section {
+  height: 70vh;
+  overflow-y: scroll;
+  background-color: rgb(248, 248, 248);
+  border-top: 1px solid rgba(18, 18, 18, 0.12);
+  border-bottom: 1px solid rgba(18, 18, 18, 0.12);
+  padding: 24px 24px;
+}
+
+.comment__item {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.comment__item__avatar {
+  flex: 0 0 40px;
+  margin-right: 12px;
+}
+
+.comment__item__avatar > img {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+}
+
+.comment__item__content {
+  flex: 1;
+}
+
+.comment__item__content .comment__item__username {
+  text-decoration: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 25px;
+}
+
+.comment__item__content .comment__text__content {
+  margin: 0;
+  font-size: 16px;
+  line-height: 22px;
+  white-space: pre-line;
+  word-break: break-word;
+  margin-bottom: 6px;
+}
+
+.comment__item__content .comment__item__timestamp {
+  color: rgba(22, 24, 35, 0.5);
+  line-height: 20px;
+}
+
+.comment__item__like {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.comment__item__like > button {
+  padding: 5px;
+  color: rgba(22, 24, 35, 0.5);
+}
+
+.comment__item__like > span {
+  color: rgba(22, 24, 35, 0.5);
+}
+
+.bottom__comment__container {
+  padding: 21px 0;
+  margin: 0 10px;
+}
+
+.comment__container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.comment__input {
+  flex: 1;
+  margin-right: 5px;
+}

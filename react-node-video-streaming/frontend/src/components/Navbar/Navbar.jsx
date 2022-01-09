@@ -10,9 +10,10 @@ import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import { Grid, Paper, Button, Link } from '@material-ui/core';
+import { Grid, Paper, Button } from '@material-ui/core';
 import './Navbar.css';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, Link } from 'react-router-dom';
 import { showModal } from '../../redux/actions/modalActions';
 
 export default function Navbar() {
@@ -20,6 +21,7 @@ export default function Navbar() {
   const isMenuOpen = Boolean(anchorEl);
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -27,6 +29,11 @@ export default function Navbar() {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleShowProfile = () => {
+    setAnchorEl(null);
+    history.push(`/profile/${user.id}`);
   };
 
   const menuId = 'primary-search-account-menu';
@@ -40,7 +47,7 @@ export default function Navbar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={handleShowProfile}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
     </Menu>
   );
@@ -88,9 +95,11 @@ export default function Navbar() {
           <Grid container style={{ alignItems: 'center' }}>
             <Grid item xs={1} />
             <Grid item xs={1}>
-              <Typography className="app__title" variant="h5" noWrap>
-                VidStream
-              </Typography>
+              <Link to="/">
+                <Typography className="app__title" variant="h5" noWrap>
+                  VidStream
+                </Typography>
+              </Link>
             </Grid>
             <Grid item xs={2} />
             <Grid item xs={4}>

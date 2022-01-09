@@ -1,5 +1,6 @@
 export default {
   HOME: '/',
   VIDEO_UPLOAD: '/upload',
-  PROFILE: '/profile',
+  VIDEO_DETAIL: '/videos/:videoId',
+  PROFILE: '/profile/:userId',
 };

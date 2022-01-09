@@ -2,19 +2,31 @@ import React from 'react';
 import './GalleryItem.css';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
+import { useHistory } from 'react-router-dom';
+import { ASSET_BASE_URL } from '../../configs';
 
-function GalleryItem({ thumbnailUri, numLikes, numComments }) {
+function GalleryItem({ video }) {
+  const history = useHistory();
+
+  const handleClick = () => {
+    history.push(`/videos/${video._id}/`);
+  };
+
   return (
     <div className="gallery__item">
-      <img src={thumbnailUri} className="gallery__image" alt="Thumbnail" />
-      <div className="gallery__item__info">
+      <img
+        src={`${ASSET_BASE_URL}/${video.thumbnail.fileName}`}
+        className="gallery__image"
+        alt="Thumbnail"
+      />
+      <div className="gallery__item__info" onClick={handleClick}>
         <ul>
           <li className="gallery__item__likes">
             <FavoriteIcon />
-            {numLikes}
+            {video.likes.length}
           </li>
           <li className="gallery__item__comments">
-            <ChatBubbleIcon /> {numComments}
+            <ChatBubbleIcon /> {video.numComments}
           </li>
         </ul>
       </div>

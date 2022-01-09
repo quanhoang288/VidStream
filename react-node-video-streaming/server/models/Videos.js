@@ -47,6 +47,10 @@ const videoSchema = new mongoose.Schema({
     type: String,
     enum: [VIDEO_STATUS_DRAFT, VIDEO_STATUS_PUBLISHED, VIDEO_STATUS_DELETED],
   },
+  remoteId: {
+    type: String,
+    required: true,
+  },
 });
 
 videoSchema.set('timestamps', true);

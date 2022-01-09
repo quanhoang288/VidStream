@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 import {
   Button,
@@ -9,12 +10,23 @@ import {
 } from '@material-ui/core';
 
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import PauseIcon from '@material-ui/icons/Pause';
+
 import FullScreenIcon from '@material-ui/icons/Fullscreen';
 import VolumeUpIcon from '@material-ui/icons/VolumeUp';
 import './VideoPlayer.css';
+import { API_BASE_URL } from '../../configs';
 
-function VideoPlayer() {
+function VideoPlayer(props) {
+  const { showBackButton, handleBack, videoId } = props;
+  const videoRef = useRef();
+
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'playbackrate-popover' : undefined;
+
+  const [isPlaying, setPlaying] = useState(false);
 
   const handlePopover = (event) => {
     setAnchorEl(event.currentTarget);
@@ -24,18 +36,35 @@ function VideoPlayer() {
     setAnchorEl(null);
   };
 
-  const open = Boolean(anchorEl);
-  const id = open ? 'playbackrate-popover' : undefined;
+  useEffect(() => {
+    if (videoRef.current) {
+      console.log(videoRef.current);
+    }
+  }, [videoRef]);
+
+  useEffect(() => {
+    if (isPlaying) {
+      videoRef.current.play();
+    } else {
+      videoRef.current.pause();
+    }
+  }, [isPlaying]);
 
   return (
     <div className="video__item__container">
-      <video autoPlay muted loop name="media" className="video__player">
-        <source
-          src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-          type="video/mp4"
-        />
+      <video name="media" className="video__player" ref={videoRef}>
+        <source src={`${API_BASE_URL}/videos/${videoId}/stream`} />
       </video>
+
       <div className="video__control__wrapper">
+        {showBackButton && (
+          <div className="back__btn">
+            <IconButton onClick={handleBack}>
+              <CancelIcon color="action" fontSize="large" />
+            </IconButton>
+          </div>
+        )}
+
         <div className="video__bottom__control">
           <div className="video__progress__bar">
             <Slider color="secondary" />
@@ -43,12 +72,24 @@ function VideoPlayer() {
           <div className="bottom__control__btn__group">
             <div className="left__btn__group">
               <IconButton className="control__icon">
-                <PlayArrowIcon fontSize="large" className="control__icon" />
+                {isPlaying ? (
+                  <PauseIcon
+                    fontSize="medium"
+                    className="control__icon"
+                    onClick={() => setPlaying(false)}
+                  />
+                ) : (
+                  <PlayArrowIcon
+                    fontSize="medium"
+                    className="control__icon"
+                    onClick={() => setPlaying(true)}
+                  />
+                )}
               </IconButton>
 
               <div className="volume__area">
                 <IconButton className="control__icon volume__icon">
-                  <VolumeUpIcon fontSize="large" />
+                  <VolumeUpIcon fontSize="medium" />
                 </IconButton>
 
                 <div className="volume__slider">
@@ -94,7 +135,7 @@ function VideoPlayer() {
                 </div>
               </Popover>
               <IconButton className="control__icon">
-                <FullScreenIcon fontSize="large" />
+                <FullScreenIcon fontSize="medium" />
               </IconButton>
             </div>
           </div>
@@ -103,5 +144,9 @@ function VideoPlayer() {
     </div>
   );
 }
+
+VideoPlayer.defaultProps = {
+  showBackButton: false,
+};
 
 export default VideoPlayer;

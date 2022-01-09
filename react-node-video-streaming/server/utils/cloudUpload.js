@@ -71,6 +71,8 @@ const uploadFileToDrive = async (filePath, uploadFolderName, mimeType) => {
     throw new Error('File not found!');
   }
 
+  console.log('uploading file...');
+
   const googleDriveService = new GoogleDriveService(
     GOOGLE_DRIVE_CLIENT_ID,
     GOOGLE_DRIVE_CLIENT_SECRET,
@@ -93,14 +95,25 @@ const uploadFileToDrive = async (filePath, uploadFolderName, mimeType) => {
     fileName,
     path.resolve(filePath),
     mimeType,
-    folder.data.id,
+    folder.id,
   );
 
   console.log('File uploaded successfully!');
 
   fs.unlinkSync(path.resolve(filePath));
 
-  return result.data;
+  return result;
+};
+
+const downloadPartialContentFromDrive = async (fileId, range) => {
+  const googleDriveService = new GoogleDriveService(
+    GOOGLE_DRIVE_CLIENT_ID,
+    GOOGLE_DRIVE_CLIENT_SECRET,
+    GOOGLE_DRIVE_REDIRECT_URI,
+    GOOGLE_DRIVE_REFRESH_TOKEN,
+  );
+
+  return googleDriveService.downloadPartialContent(fileId, range);
 };
 
 const downloadFileFromDrive = async (fileId) => {
@@ -116,6 +129,7 @@ const downloadFileFromDrive = async (fileId) => {
 
 module.exports = {
   downloadFileFromDrive,
+  downloadPartialContentFromDrive,
   uploadFileToDrive,
   uploadFolderToDrive,
 };

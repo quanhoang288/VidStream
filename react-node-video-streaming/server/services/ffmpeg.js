@@ -7,9 +7,12 @@ const ffmpegServices = {};
 ffmpegServices.encode = (file) =>
   new Promise((resolve, reject) => {
     const sizes = [
-      [240, 350],
-      [480, 700],
-      [720, 2500],
+      [640, 450],
+      [854, 1000],
+      [1280, 1500],
+      // [360, 450],
+      // [480, 1000],
+      // [720, 1500],
     ];
     const basename = path.basename(file.filename, path.extname(file.filename));
     const sourceFn = file.path;
@@ -22,34 +25,32 @@ ffmpegServices.encode = (file) =>
       source: path.resolve(sourceFn),
       cwd: path.resolve(targetDir),
     });
-    ffmpegCmd
-      .format('dash')
-      .videoCodec('libx264')
-      .audioCodec('aac')
-      .audioChannels(2)
-      .audioFrequency(44100)
-      .outputOptions([
-        '-preset veryfast',
-        '-keyint_min 60',
-        '-g 60',
-        '-sc_threshold 0',
-        '-profile:v main',
-        '-use_template 1',
-        '-use_timeline 1',
-        '-b_strategy 0',
-        '-bf 1',
-        '-map 0:a?',
-        '-b:a 96k',
-      ]);
+
+    ffmpegCmd.outputOptions('-r 30');
 
     for (let i = 0; i < sizes.length; i += 1) {
-      const size = sizes[i];
-      ffmpegCmd.outputOptions([
-        `-filter_complex [0]format=pix_fmts=yuv420p[temp${i}];[temp${i}]scale=-2:${size[0]}[A${i}]`,
-        `-map [A${i}]:v`,
-        `-b:v:${i} ${size[1]}k`,
-      ]);
+      ffmpegCmd.outputOptions(`-map 0:v:0`);
     }
+
+    ffmpegCmd.outputOptions('-map 0:a?:0');
+
+    sizes.forEach((size, index) => {
+      ffmpegCmd
+        .outputOptions(`-b:v:${index} ${size[1]}k`)
+        .outputOptions(`-c:v:${index} libx264`)
+        .outputOptions(`-filter:v:${index}`, `scale=${size[0]}:-1`);
+    });
+
+    ffmpegCmd
+      .outputOptions([
+        '-preset veryslow',
+        '-use_template 1',
+        '-use_timeline 1',
+        '-x264opts keyint=60:min-keyint=60:no-scenecut',
+        '-seg_duration 4',
+      ])
+      .outputOptions('-adaptation_sets', 'id=0,streams=v id=1,streams=a')
+      .format('dash');
 
     ffmpegCmd.on('start', (commandLine) => {
       console.log(`Spawned FFmpeg with command: ${commandLine}`);
@@ -65,7 +66,7 @@ ffmpegServices.encode = (file) =>
         resolve({ targetDir, targetFn });
       })
       .on('error', (err) => {
-        console.log('error', err.message);
+        console.log(err);
         reject(err);
       })
       .save(path.resolve(targetFn));

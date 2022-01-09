@@ -64,10 +64,24 @@ module.exports = class GoogleDriveService {
     });
   }
 
+  downloadPartialContent(fileId, range) {
+    console.log('range: ', range);
+    return this.driveClient.files.get(
+      {
+        fileId,
+        alt: 'media',
+      },
+      { headers: { Range: range }, responseType: 'stream' },
+    );
+  }
+
   downloadFile(fileId) {
-    return this.driveClient.files.get({
-      fileId,
-      alt: 'media',
-    });
+    return this.driveClient.files.get(
+      {
+        fileId,
+        alt: 'media',
+      },
+      { responseType: 'stream' },
+    );
   }
 };

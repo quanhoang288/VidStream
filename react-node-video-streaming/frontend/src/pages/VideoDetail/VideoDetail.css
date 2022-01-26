@@ -11,10 +11,13 @@
 
 .video__meta__info {
   flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .info__container {
-  padding: 0 25px;
+  padding: 10px 25px;
+  border-bottom: 1px solid rgba(18, 18, 18, 0.12);
 }
 
 .video__author__info {
@@ -143,4 +146,12 @@
 .comment__input {
   flex: 1;
   margin-right: 5px;
+}
+
+.login__required {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
 }

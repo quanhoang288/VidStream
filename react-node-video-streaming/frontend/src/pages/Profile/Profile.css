@@ -110,6 +110,10 @@ Flexbox and floats are used as a fallback so that browsers which don't support g
   cursor: pointer;
 }
 
+.profile__stats .auto__cursor {
+  cursor: auto;
+}
+
 .profile__stats li:last-of-type {
   margin-right: 0;
 }
@@ -120,6 +124,20 @@ Flexbox and floats are used as a fallback so that browsers which don't support g
 }
 
 /* Gallery Section */
+
+.empty__profile {
+  display: flex;
+  flex-wrap: wrap;
+  margin: -1rem -1rem;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.empty__profile h4 {
+  font-size: 20px;
+  line-height: 1rem;
+}
 
 .gallery {
   display: flex;

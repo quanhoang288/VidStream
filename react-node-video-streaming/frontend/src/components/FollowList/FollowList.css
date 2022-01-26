@@ -1,0 +1,25 @@
+.follow__list__container {
+  min-width: 300px;
+}
+
+.user__item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.user__item__avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.user__item__username {
+  margin: auto 1rem;
+  flex: 1;
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+}

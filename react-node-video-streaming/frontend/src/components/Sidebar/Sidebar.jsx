@@ -21,7 +21,7 @@ function Sidebar() {
           <Typography variant="h6">Kham pha noi dung</Typography>
           <List>
             {['Danh cho ban', 'Dang theo doi'].map((text, index) => (
-              <ListItem button key={text} className="sidebar__item">
+              <ListItem button key={text} className="category__item">
                 <ListItemIcon>
                   {index === 0 ? (
                     <HomeIcon fontSize="large" />
@@ -38,7 +38,7 @@ function Sidebar() {
         <div className="suggested__accs mt__1">
           <Typography variant="h6">Tai khoan duoc goi y</Typography>
           <List>
-            <ListItem button key={1} className="sidebar__item">
+            <ListItem button key={1} className="category__item">
               <ListItemAvatar>
                 <Avatar
                   alt="Quan Hoang"
@@ -47,7 +47,7 @@ function Sidebar() {
               </ListItemAvatar>
               <ListItemText primary="Quan Hoang" />
             </ListItem>
-            <ListItem button key={2} className="sidebar__item">
+            <ListItem button key={2} className="category__item">
               <ListItemAvatar>
                 <Avatar
                   alt="Quan Hoang"
@@ -56,7 +56,7 @@ function Sidebar() {
               </ListItemAvatar>
               <ListItemText primary="Quan Hoang" />
             </ListItem>
-            <ListItem button key={3} className="sidebar__item">
+            <ListItem button key={3} className="category__item">
               <ListItemAvatar>
                 <Avatar
                   alt="Quan Hoang"
@@ -65,7 +65,7 @@ function Sidebar() {
               </ListItemAvatar>
               <ListItemText primary="Quan Hoang" />
             </ListItem>
-            <ListItem button key={1} className="sidebar__item">
+            <ListItem button key={1} className="category__item">
               <ListItemAvatar>
                 <Avatar
                   alt="Quan Hoang"
@@ -74,7 +74,7 @@ function Sidebar() {
               </ListItemAvatar>
               <ListItemText primary="Quan Hoang" />
             </ListItem>
-            <ListItem button key={2} className="sidebar__item">
+            <ListItem button key={2} className="category__item">
               <ListItemAvatar>
                 <Avatar
                   alt="Quan Hoang"
@@ -83,7 +83,7 @@ function Sidebar() {
               </ListItemAvatar>
               <ListItemText primary="Quan Hoang" />
             </ListItem>
-            <ListItem button key={3} className="sidebar__item">
+            <ListItem button key={3} className="category__item">
               <ListItemAvatar>
                 <Avatar
                   alt="Quan Hoang"
@@ -92,7 +92,7 @@ function Sidebar() {
               </ListItemAvatar>
               <ListItemText primary="Quan Hoang" />
             </ListItem>
-            <ListItem button key={1} className="sidebar__item">
+            <ListItem button key={1} className="category__item">
               <ListItemAvatar>
                 <Avatar
                   alt="Quan Hoang"
@@ -101,7 +101,7 @@ function Sidebar() {
               </ListItemAvatar>
               <ListItemText primary="Quan Hoang" />
             </ListItem>
-            <ListItem button key={2} className="sidebar__item">
+            <ListItem button key={2} className="category__item">
               <ListItemAvatar>
                 <Avatar
                   alt="Quan Hoang"
@@ -112,7 +112,7 @@ function Sidebar() {
             </ListItem>
           </List>
         </div>
-        <Divider />
+        {/* <Divider />
         <div className="suggested__accs mt__1">
           <Typography variant="h6">Tai khoan dang theo doi</Typography>
           <List>
@@ -198,7 +198,7 @@ function Sidebar() {
               <ListItemText primary="Quan Hoang" />
             </ListItem>
           </List>
-        </div>
+        </div> */}
       </div>
     </div>
   );

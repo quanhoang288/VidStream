@@ -7,7 +7,7 @@
 
 .sidebar__container {
   /* flex: 0 0 300px; */
-  height: 100vh;
+  height: 85vh;
   overflow: hidden;
 }
 
@@ -15,7 +15,7 @@
   overflow-y: scroll;
 }
 
-.sidebar__item {
+.category_item {
   padding-left: 0 !important;
   padding-right: 2rem !important;
 }

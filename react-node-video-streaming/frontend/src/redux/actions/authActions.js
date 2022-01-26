@@ -5,6 +5,7 @@ export const authActionTypes = {
   LOGIN_FAILURE: 'LOGIN_FAILURE',
   REGISTER_FAILURE: 'REGISTER_FAILURE',
   REGISTER_SUCCESS: 'REGISTER_SUCCESS',
+  LOGOUT: 'LOGOUT',
 };
 
 const registerRequest = () => ({
@@ -35,10 +36,15 @@ const loginFailure = (error) => ({
   payload: error,
 });
 
+const logout = () => ({
+  type: authActionTypes.LOGOUT,
+});
+
 export {
   loginFailure,
   loginRequest,
   loginSuccess,
+  logout,
   registerRequest,
   registerFailure,
   registerSuccess,

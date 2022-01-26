@@ -9,6 +9,7 @@
 .author__info {
   width: 100%;
   display: flex;
+  align-items: center;
   flex-direction: row;
   margin-bottom: 1rem;
 }
@@ -27,6 +28,7 @@
   margin-right: 5rem;
   color: #000;
   text-decoration: none;
+  flex: 1;
 }
 
 .feed__caption {
@@ -38,6 +40,11 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+}
+
+.video__item__thumbnail {
+  height: 100%;
+  width: 100%;
 }
 
 .action__bar {

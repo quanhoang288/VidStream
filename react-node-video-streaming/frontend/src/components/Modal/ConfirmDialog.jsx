@@ -20,7 +20,11 @@ function ConfirmDialog(props) {
     title,
   } = props;
   return (
-    <Dialog open={isModalVisible} aria-labelledby="confirm-dialog-title">
+    <Dialog
+      open={isModalVisible}
+      onClose={handleCancel}
+      aria-labelledby="confirm-dialog-title"
+    >
       <DialogContent className="dialog__content">
         <div className="dialog__text">
           <Typography variant="h5">{title}</Typography>

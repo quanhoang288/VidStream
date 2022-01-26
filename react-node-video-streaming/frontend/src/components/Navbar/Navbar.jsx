@@ -15,6 +15,8 @@ import './Navbar.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, Link } from 'react-router-dom';
 import { showModal } from '../../redux/actions/modalActions';
+import { authActions } from '../../redux/actions';
+import route from '../../constants/route';
 
 export default function Navbar() {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -36,25 +38,30 @@ export default function Navbar() {
     history.push(`/profile/${user.id}`);
   };
 
+  const handleLogout = () => {
+    dispatch(authActions.logout());
+    setAnchorEl(null);
+  };
+
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       id={menuId}
       keepMounted
       transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleShowProfile}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleShowProfile}>Xem hồ sơ</MenuItem>
+      <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
     </Menu>
   );
 
   const renderGuestNavbarOptions = (
     <>
-      <Link href="#" variant="body1" className="mr__2 vertical__center ">
+      <Link variant="body1" className="mr__2 vertical__center ">
         Tải lên
       </Link>
       <Button
@@ -70,7 +77,10 @@ export default function Navbar() {
 
   const renderAuthenticatedNavbarOptions = (
     <>
-      <IconButton color="inherit">
+      <IconButton
+        color="inherit"
+        onClick={() => history.push(route.VIDEO_UPLOAD)}
+      >
         <CloudUploadIcon />
       </IconButton>
       <IconButton color="inherit">
@@ -106,7 +116,7 @@ export default function Navbar() {
               <Paper component="form" elevation={2} className="search__wrapper">
                 <InputBase
                   style={{ marginLeft: '5px', flex: 1 }}
-                  placeholder="Search"
+                  placeholder="Tìm kiếm"
                   inputProps={{ 'aria-label': 'search for videos' }}
                 />
                 <IconButton

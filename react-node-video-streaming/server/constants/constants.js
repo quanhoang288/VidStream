@@ -19,6 +19,9 @@ const VIDEO_STATUS_DELETED = 'deleted';
 const VIDEO_MODE_PUBLIC = 'public';
 const VIDEO_MODE_PRIVATE = 'private';
 
+// no avatar image file name
+const NO_AVATAR_FILENAME = 'no_avatar.jpg';
+
 module.exports = {
   ASSET_TYPE_AVATAR,
   ASSET_TYPE_CHUNK,
@@ -31,4 +34,5 @@ module.exports = {
   VIDEO_STATUS_DELETED,
   VIDEO_MODE_PRIVATE,
   VIDEO_MODE_PUBLIC,
+  NO_AVATAR_FILENAME,
 };

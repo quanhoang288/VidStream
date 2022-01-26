@@ -37,12 +37,6 @@ function VideoPlayer(props) {
   };
 
   useEffect(() => {
-    if (videoRef.current) {
-      console.log(videoRef.current);
-    }
-  }, [videoRef]);
-
-  useEffect(() => {
     if (isPlaying) {
       videoRef.current.play();
     } else {

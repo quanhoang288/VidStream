@@ -13,11 +13,13 @@ import CheckIcon from '@material-ui/icons/CheckCircle';
 import './VideoUpload.css';
 import nprogress from 'nprogress';
 import 'nprogress/nprogress.css';
+import { useHistory } from 'react-router-dom';
 import { videoApi } from '../../apis';
 import Main from '../../containers/Main/Main';
 import Toast from '../../components/Toast/Toast';
 import ConfirmDialog from '../../components/Modal/ConfirmDialog';
 import { errorMessages } from '../../constants/messages';
+// import ROUTES from '../../constants/route';
 
 function VideoUpload() {
   const videoRestrictions = [
@@ -46,6 +48,8 @@ function VideoUpload() {
   const [isUploadFinished, setUploadFinished] = useState(false);
   const [isUploadSuccess, setUploadSuccess] = useState(false);
 
+  const history = useHistory();
+
   nprogress.configure({ parent: '.grid__container' });
 
   useEffect(() => {
@@ -57,6 +61,12 @@ function VideoUpload() {
       nprogress.done();
     }
   }, [isUploading, isUploadFinished]);
+
+  useEffect(() => {
+    if (isUploadSuccess) {
+      setConfirmModalVisible(true);
+    }
+  }, [isUploadSuccess]);
 
   const validateFileInput = (file) => {
     const { size } = file;
@@ -121,6 +131,10 @@ function VideoUpload() {
     setUploading(false);
   };
 
+  const handleViewProfile = () => {
+    history.push(`/profile/${userId}`);
+  };
+
   return (
     <Main>
       {errMsg && (
@@ -141,13 +155,13 @@ function VideoUpload() {
           handleConfirm={resetInputs}
         />
       )}
-      {isUploadFinished && isUploadSuccess && (
+      {isUploadFinished && isUploadSuccess && isConfirmModalVisible && (
         <ConfirmDialog
           cancelTitle="Xem trang cá nhân"
           confirmTitle="Tải video khác lên"
           isModalVisible
           title="Video của bạn đã được đăng tải thành công!"
-          handleCancel={() => setConfirmModalVisible(false)}
+          handleCancel={handleViewProfile}
           handleConfirm={resetInputs}
         />
       )}

@@ -13,6 +13,13 @@ videoRoutes.post(
   asyncWrapper(videoController.upload),
 );
 
+videoRoutes.get('/suggestList', asyncWrapper(videoController.getSuggestedList));
+
+videoRoutes.get(
+  '/followingList',
+  asyncWrapper(videoController.getFollowingVideos),
+);
+
 videoRoutes.get('/:videoId/stream', asyncWrapper(videoController.getStream));
 
 videoRoutes.get('/:videoId', asyncWrapper(videoController.show));
@@ -22,13 +29,4 @@ videoRoutes.get(
   asyncWrapper(videoController.getComments),
 );
 
-videoRoutes.get(
-  '/:videoId/manifest',
-  asyncWrapper(videoController.getManifestFile),
-);
-
-videoRoutes.get(
-  '/:videoId/chunks/:chunkName',
-  asyncWrapper(videoController.downloadVideoChunk),
-);
 module.exports = videoRoutes;

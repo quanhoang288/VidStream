@@ -23,11 +23,20 @@ const getComments = (videoId) => api.get(`/videos/${videoId}/comments`);
 
 const getContent = (videoId) => api.get(`/videos/${videoId}/stream`);
 
-const getManifestFile = (videoId) => api.get(`/videos/${videoId}/manifest`);
+const getSuggestedList = () => api.get('/videos/suggestList');
 
-const getChunk = (videoId, chunkName) =>
-  api.get(`/videos/${videoId}/chunks/${chunkName}`, {
-    responseType: 'arraybuffer',
+const getFollowingList = (token) =>
+  api.get('/videos/followingList', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 
-export { upload, getChunk, getManifestFile, getInfo, getComments, getContent };
+export {
+  upload,
+  getInfo,
+  getComments,
+  getContent,
+  getFollowingList,
+  getSuggestedList,
+};

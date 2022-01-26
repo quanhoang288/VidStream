@@ -25,5 +25,6 @@ module.exports = {
     'global-require': 0,
     'linebreak-style': 0,
     'no-console': 0,
+    eqeqeq: 0,
   },
 };

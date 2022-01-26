@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const CommentModel = require('../models/Comments');
 const VideoModel = require('../models/Videos');
 const AssetModel = require('../models/Assets');
+const UserModel = require('../models/Users');
 const httpStatus = require('../utils/httpStatus');
 const {
   ASSET_TYPE_THUMBNAIL,
@@ -23,7 +24,6 @@ const videoController = {};
 videoController.getStream = async (req, res) => {
   const { videoId } = req.params;
   const video = await VideoModel.findById(videoId);
-  console.log(video);
 
   if (!video) {
     return res.status(httpStatus.NOT_FOUND).json({
@@ -71,7 +71,10 @@ videoController.show = async (req, res) => {
       model: 'Users',
     });
     return res.status(httpStatus.OK).json({
-      video,
+      video: {
+        ...video.toObject(),
+        numLikes: video.likes ? video.likes.length : 0,
+      },
     });
   } catch (error) {
     console.error(error);
@@ -83,7 +86,7 @@ videoController.show = async (req, res) => {
 
 videoController.getComments = async (req, res) => {
   const { videoId } = req.params;
-
+  console.log('video id: ', videoId);
   try {
     const videoComments = await CommentModel.find({ video: videoId }).populate({
       path: 'user',
@@ -93,8 +96,9 @@ videoController.getComments = async (req, res) => {
         select: '_id fileName',
         model: 'Assets',
       },
-      model: 'Comments',
+      model: 'Users',
     });
+    console.log(videoComments);
     return res.status(200).json({
       comments: videoComments,
     });
@@ -253,6 +257,58 @@ videoController.downloadVideoChunk = async (req, res) => {
     console.error(error);
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
       error: 'Error downloading video chunk',
+    });
+  }
+};
+
+videoController.getSuggestedList = async (req, res) => {
+  // todo: get random list of videos
+  const suggestedList = await VideoModel.find({})
+    .sort({ createdAt: -1 })
+    .limit(5)
+    .populate({
+      path: 'uploadedBy',
+      select: '_id username',
+      populate: {
+        path: 'avatar',
+        select: '_id fileName',
+        model: 'Assets',
+      },
+      model: 'Users',
+    })
+    .populate('thumbnail', '_id fileName', 'Assets');
+  return res.status(httpStatus.OK).json({
+    suggestedList,
+  });
+};
+
+videoController.getFollowingVideos = async (req, res) => {
+  const { userId } = req;
+  try {
+    const user = await UserModel.findById(userId);
+    const followingList = user.following;
+    const followingVideos = await VideoModel.find({
+      _id: { $in: followingList },
+    })
+      .populate({
+        path: 'uploadedBy',
+        select: '_id username',
+        populate: {
+          path: 'avatar',
+          select: '_id fileName',
+          model: 'Assets',
+        },
+        model: 'Users',
+      })
+      .populate('thumbnail', '_id fileName', 'Assets');
+
+    return res.status(httpStatus.OK).json({
+      followingVideos,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+      error: 'Error getting following user videos',
     });
   }
 };

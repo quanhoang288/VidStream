@@ -1,102 +1,31 @@
-import React, { useState } from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import SearchIcon from '@material-ui/icons/Search';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import NotificationsIcon from '@material-ui/icons/Notifications';
+import React from 'react';
+
+import {
+  AppBar,
+  Toolbar,
+  Grid,
+  Button,
+  IconButton,
+  Typography,
+} from '@material-ui/core';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import { Grid, Paper, Button } from '@material-ui/core';
-import './Navbar.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { showModal } from '../../redux/actions/modalActions';
-import { authActions } from '../../redux/actions';
 import route from '../../constants/route';
+import LanguagePopover from '../../containers/Menus/LanguagePopover';
+import NotificationPopover from '../../containers/Menus/NotificationPopover';
+import AccountPopover from '../../containers/Menus/AccountPopover';
+import SearchBar from '../SearchBar/SearchBar';
+import './Navbar.css';
 
 export default function Navbar() {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const isMenuOpen = Boolean(anchorEl);
   const user = useSelector((state) => state.auth.user);
+  const { t } = useTranslation(['auth']);
+
   const dispatch = useDispatch();
   const history = useHistory();
-
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleShowProfile = () => {
-    setAnchorEl(null);
-    history.push(`/profile/${user.id}`);
-  };
-
-  const handleLogout = () => {
-    dispatch(authActions.logout());
-    setAnchorEl(null);
-  };
-
-  const menuId = 'primary-search-account-menu';
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleShowProfile}>Xem hồ sơ</MenuItem>
-      <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
-    </Menu>
-  );
-
-  const renderGuestNavbarOptions = (
-    <>
-      <Link variant="body1" className="mr__2 vertical__center ">
-        Tải lên
-      </Link>
-      <Button
-        variant="contained"
-        color="secondary"
-        size="medium"
-        onClick={() => dispatch(showModal())}
-      >
-        Đăng nhập
-      </Button>
-    </>
-  );
-
-  const renderAuthenticatedNavbarOptions = (
-    <>
-      <IconButton
-        color="inherit"
-        onClick={() => history.push(route.VIDEO_UPLOAD)}
-      >
-        <CloudUploadIcon />
-      </IconButton>
-      <IconButton color="inherit">
-        <NotificationsIcon />
-      </IconButton>
-      <IconButton
-        edge="end"
-        aria-controls={menuId}
-        aria-haspopup="true"
-        onClick={handleProfileMenuOpen}
-        color="inherit"
-      >
-        <AccountCircle />
-      </IconButton>
-    </>
-  );
 
   return (
     <div>
@@ -113,33 +42,39 @@ export default function Navbar() {
             </Grid>
             <Grid item xs={2} />
             <Grid item xs={4}>
-              <Paper component="form" elevation={2} className="search__wrapper">
-                <InputBase
-                  style={{ marginLeft: '5px', flex: 1 }}
-                  placeholder="Tìm kiếm"
-                  inputProps={{ 'aria-label': 'search for videos' }}
-                />
-                <IconButton
-                  type="submit"
-                  className="search__icon"
-                  aria-label="search"
-                >
-                  <SearchIcon />
-                </IconButton>
-              </Paper>
+              <SearchBar />
             </Grid>
             <Grid item xs={2} />
             <Grid item>
               <div className="icon__group">
-                {user
-                  ? renderAuthenticatedNavbarOptions
-                  : renderGuestNavbarOptions}
+                {user ? (
+                  <>
+                    <LanguagePopover />
+                    <IconButton
+                      color="inherit"
+                      onClick={() => history.push(route.VIDEO_UPLOAD)}
+                    >
+                      <CloudUploadIcon />
+                    </IconButton>
+                    <NotificationPopover />
+                    <AccountPopover />
+                  </>
+                ) : (
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    size="medium"
+                    onClick={() => dispatch(showModal())}
+                  >
+                    {t('LOGIN_BUTTON', { ns: 'auth' })}
+                  </Button>
+                )}
               </div>
             </Grid>
           </Grid>
         </Toolbar>
       </AppBar>
-      {renderMenu}
+      {/* {renderMenu} */}
     </div>
   );
 }

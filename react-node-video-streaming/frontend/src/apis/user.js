@@ -28,14 +28,20 @@ const changeProfile = (fileInput, token) => {
   });
 };
 
-const getInfo = (userId, token) =>
-  api.get(`/users/${userId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+const getInfo = (userId, authUserId = null) =>
+  authUserId
+    ? api.get(`/users/${userId}?authId=${authUserId}`)
+    : api.get(`/users/${userId}`);
 
-const getVideoGallery = (userId) => api.get(`/users/${userId}/videos`);
+const getVideoGallery = (userId, lastVideoId) =>
+  lastVideoId
+    ? api.get(`/users/${userId}/videos?lastObjectId=${lastVideoId}`)
+    : api.get(`/users/${userId}/videos`);
+
+const getSuggestedList = (userId = null) =>
+  userId
+    ? api.get(`/users/suggestion?userId=${userId}`)
+    : api.get('/users/suggestion');
 
 const getFollowingList = (userId, token) =>
   api.get(`/users/${userId}/following`, {
@@ -85,6 +91,7 @@ export {
   getVideoGallery,
   getFollowingList,
   getFollowerList,
+  getSuggestedList,
   follow,
   unfollow,
 };

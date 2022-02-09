@@ -22,4 +22,18 @@ const removeComment = (commentId, token) =>
     },
   );
 
-export { createComment, removeComment };
+const likeComment = (commentId, token) =>
+  api.post(`/comments/${commentId}/like`, null, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+const unlikeComment = (commentId, token) =>
+  api.post(`/comments/${commentId}/unlike`, null, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+export { createComment, removeComment, likeComment, unlikeComment };

@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-
+const FollowModel = require('../models/Follow');
 const UserModel = require('../models/Users');
 const VideoModel = require('../models/Videos');
 const AssetModel = require('../models/Assets');
@@ -9,6 +9,7 @@ const { JWT_SECRET } = require('../configs');
 const {
   ASSET_TYPE_AVATAR,
   NO_AVATAR_FILENAME,
+  VIDEO_STATUS_DELETED,
 } = require('../constants/constants');
 
 const userController = {};
@@ -47,6 +48,7 @@ userController.register = async (req, res) => {
       user: {
         id: savedUser._id,
         username: savedUser.username,
+        avatar: userAvatar,
       },
       token,
     });
@@ -98,22 +100,23 @@ userController.login = async (req, res) => {
 };
 
 userController.show = async (req, res) => {
-  const { userId } = req;
+  const { authId } = req.query;
   const { id } = req.params;
   try {
     const user = await UserModel.findById(id)
-      .select('_id bio name username followers following')
+      .select('_id bio name username numFollowers numFollowing')
       .populate({
         path: 'avatar',
         select: '_id fileName',
         model: 'Assets',
-      })
-      .populate('followers')
-      .populate('following');
+      });
 
-    const numUploadedVideos = await VideoModel.count({ uploadedBy: id });
+    const numUploadedVideos = await VideoModel.count({
+      uploadedBy: id,
+      status: { $ne: VIDEO_STATUS_DELETED },
+    });
 
-    if (userId === id) {
+    if (!authId || authId === id) {
       return res.status(httpStatus.OK).json({
         user: {
           ...user.toObject(),
@@ -122,10 +125,15 @@ userController.show = async (req, res) => {
       });
     }
 
+    const existingFollow = await FollowModel.findOne({
+      user: id,
+      following: authId,
+    });
+
     return res.status(httpStatus.OK).json({
       user: {
         ...user.toObject(),
-        isFollowing: user.followers.findIndex((u) => u._id == userId) !== -1,
+        isFollowing: existingFollow !== null,
         numUploadedVideos,
       },
     });
@@ -234,19 +242,37 @@ userController.editInfo = async (req, res) => {
 userController.getVideoGallery = async (req, res) => {
   try {
     const authorId = req.params.id;
+    const { lastObjectId, limit } = req.paginationParams;
+
+    let videoFilter = {
+      uploadedBy: authorId,
+      status: { $ne: VIDEO_STATUS_DELETED },
+    };
+
+    const lastRetrievedVideo = await VideoModel.findById(lastObjectId);
+    if (lastRetrievedVideo) {
+      videoFilter = {
+        ...videoFilter,
+        createdAt: {
+          $lt: lastRetrievedVideo.createdAt,
+        },
+      };
+    }
+
     const author = await UserModel.findById(authorId).populate({
       path: 'avatar',
       select: '_id fileName',
       model: 'Assets',
     });
 
-    const videoGallery = await VideoModel.find({
-      uploadedBy: authorId,
-    }).populate({
-      path: 'thumbnail',
-      select: '_id fileName',
-      model: 'Assets',
-    });
+    const videoGallery = await VideoModel.find(videoFilter)
+      .populate({
+        path: 'thumbnail',
+        select: '_id fileName',
+        model: 'Assets',
+      })
+      .sort({ createdAt: -1 })
+      .limit(limit);
 
     return res.status(httpStatus.OK).json({
       author,
@@ -262,21 +288,36 @@ userController.getVideoGallery = async (req, res) => {
 
 userController.getSuggestedList = async (req, res) => {
   // todo: get random list
-  const suggestedList = await UserModel.find({}).limit(10);
-  return res.status(httpStatus.OK).json(suggestedList);
+  const { userId } = req.query;
+  const filter = {};
+  try {
+    if (userId) {
+      const followingList = await FollowModel.find({ following: userId });
+      filter._id = {
+        $nin: followingList.map((follow) => follow.user),
+      };
+    }
+    const suggestedList = await UserModel.find(filter)
+      .sort({ numFollowers: -1 })
+      .select('_id username avatar numFollowers numFollowing')
+      .populate('avatar', 'fileName')
+      .limit(10);
+    return res.status(httpStatus.OK).json({ suggestedList });
+  } catch (error) {
+    console.log(error);
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+      message: 'Error getting suggested list',
+    });
+  }
 };
 
 userController.getFollowerList = async (req, res) => {
   const { userId } = req;
   const { id } = req.params;
+
   try {
-    const authUser = await UserModel.findById(userId).populate(
-      'following',
-      '_id',
-      'Users',
-    );
-    const user = await UserModel.findById(id).populate({
-      path: 'followers',
+    const userFollowers = await FollowModel.find({ user: id }).populate({
+      path: 'following',
       select: '_id username',
       populate: {
         path: 'avatar',
@@ -286,22 +327,17 @@ userController.getFollowerList = async (req, res) => {
       model: 'Users',
     });
 
-    if (!user) {
-      return res.status(httpStatus.NOT_FOUND).json({
-        error: 'User not found',
-      });
-    }
-    if (userId === id) {
-      return res.status(httpStatus.OK).json({
-        followerList: user.followers,
-      });
-    }
+    const authUserFollowingList = await FollowModel.find({ following: userId });
+
+    const followers = userFollowers.map((follow) => ({
+      ...follow.following.toObject(),
+      isFollowing:
+        authUserFollowingList.findIndex((item) =>
+          item.user.equals(follow.following._id),
+        ) !== -1,
+    }));
     return res.status(httpStatus.OK).json({
-      followerList: user.followers.map((follower) => ({
-        ...follower.toObject(),
-        isFollowing:
-          authUser.following.findIndex((u) => u._id === follower._id) !== -1,
-      })),
+      followers,
     });
   } catch (error) {
     console.error(error);
@@ -315,14 +351,10 @@ userController.getFollowingList = async (req, res) => {
   const { userId } = req;
 
   const { id } = req.params;
+
   try {
-    const authUser = await UserModel.findById(userId).populate(
-      'following',
-      '_id',
-      'Users',
-    );
-    const user = await UserModel.findById(id).populate({
-      path: 'following',
+    const userFollowing = await FollowModel.find({ following: id }).populate({
+      path: 'user',
       select: '_id username',
       populate: {
         path: 'avatar',
@@ -331,25 +363,17 @@ userController.getFollowingList = async (req, res) => {
       },
       model: 'Users',
     });
-    if (!user) {
-      return res.status(httpStatus.NOT_FOUND).json({
-        error: 'User not found',
-      });
-    }
-    if (userId === id) {
-      return res.status(httpStatus.OK).json({
-        followingList: user.following.map((following) => ({
-          ...following.toObject(),
-          isFollowing: true,
-        })),
-      });
-    }
+    const authUserFollowingList = await FollowModel.find({ following: userId });
+
+    const followingList = userFollowing.map((follow) => ({
+      ...follow.user.toObject(),
+      isFollowing:
+        authUserFollowingList.findIndex((item) =>
+          item.user.equals(follow.user._id),
+        ) !== -1,
+    }));
     return res.status(httpStatus.OK).json({
-      followingList: user.following.map((following) => ({
-        ...following.toObject(),
-        isFollowing:
-          authUser.following.findIndex((u) => u._id === following._id) !== -1,
-      })),
+      followingList,
     });
   } catch (error) {
     console.error(error);
@@ -367,22 +391,29 @@ userController.follow = async (req, res) => {
       message: 'Cannot follow yourself',
     });
   }
+
   try {
-    const user = await UserModel.findById(userId);
+    const authUser = await UserModel.findById(userId);
     const userToFollow = await UserModel.findById(userIdToFollow);
-    const followingList = user.following || [];
-    const followerList = userToFollow.followers || [];
-    if (followerList.includes(userId)) {
+    const existingFollow = await FollowModel.findOne({
+      user: userIdToFollow,
+      following: userId,
+    });
+
+    console.log('existing: ', existingFollow);
+
+    if (existingFollow) {
       return res.status(httpStatus.BAD_REQUEST).json({
-        error: 'Already followed this user',
+        message: 'Already followed this user',
       });
     }
-
-    followerList.push(userId);
-    followingList.push(userIdToFollow);
-
-    await user.update({ following: followingList });
-    await userToFollow.update({ followers: followerList });
+    const newFollow = new FollowModel({
+      user: userIdToFollow,
+      following: userId,
+    });
+    await newFollow.save();
+    await authUser.update({ numFollowing: authUser.numFollowing + 1 });
+    await userToFollow.update({ numFollowers: userToFollow.numFollowers + 1 });
 
     return res.status(httpStatus.OK).json({
       message: 'Followed successfully',
@@ -390,9 +421,36 @@ userController.follow = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-      error: 'Error following user',
+      message: 'Error following user',
     });
   }
+
+  // try {
+  //   const user = await UserModel.findById(userId);
+  //   const userToFollow = await UserModel.findById(userIdToFollow);
+  //   const followingList = user.following || [];
+  //   const followerList = userToFollow.followers || [];
+  //   if (followerList.includes(userId)) {
+  //     return res.status(httpStatus.BAD_REQUEST).json({
+  //       error: 'Already followed this user',
+  //     });
+  //   }
+
+  //   followerList.push(userId);
+  //   followingList.push(userIdToFollow);
+
+  //   await user.update({ following: followingList });
+  //   await userToFollow.update({ followers: followerList });
+
+  //   return res.status(httpStatus.OK).json({
+  //     message: 'Followed successfully',
+  //   });
+  // } catch (error) {
+  //   console.error(error);
+  //   return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+  //     error: 'Error following user',
+  //   });
+  // }
 };
 
 userController.unfollow = async (req, res) => {
@@ -403,30 +461,16 @@ userController.unfollow = async (req, res) => {
       message: 'Cannot unfollow yourself',
     });
   }
+
   try {
-    const user = await UserModel.findById(userId);
-    const userToUnfollow = await UserModel.findById(userIdToUnfollow);
-    const followingList = user.following || [];
-    const followerList = userToUnfollow.followers || [];
-    if (!followerList.includes(userId)) {
-      return res.status(httpStatus.BAD_REQUEST).json({
-        error: 'Not followed this user yet',
-      });
-    }
-
-    followerList.push(userId);
-    followingList.push(userIdToUnfollow);
-
-    await user.update({
-      $pull: {
-        following: userIdToUnfollow,
-      },
+    const authUser = await UserModel.findById(userId);
+    const userToFollow = await UserModel.findById(userIdToUnfollow);
+    await FollowModel.findOneAndDelete({
+      user: userIdToUnfollow,
+      following: userId,
     });
-    await userToUnfollow.update({
-      $pull: {
-        followers: userId,
-      },
-    });
+    await authUser.update({ numFollowing: authUser.numFollowing - 1 });
+    await userToFollow.update({ numFollowers: userToFollow.numFollowers - 1 });
 
     return res.status(httpStatus.OK).json({
       message: 'Unfollowed successfully',
@@ -434,9 +478,44 @@ userController.unfollow = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-      error: 'Error unfollowing user',
+      message: 'Error unfollowing user',
     });
   }
+
+  // try {
+  //   const user = await UserModel.findById(userId);
+  //   const userToUnfollow = await UserModel.findById(userIdToUnfollow);
+  //   const followingList = user.following || [];
+  //   const followerList = userToUnfollow.followers || [];
+  //   if (!followerList.includes(userId)) {
+  //     return res.status(httpStatus.BAD_REQUEST).json({
+  //       error: 'Not followed this user yet',
+  //     });
+  //   }
+
+  //   followerList.push(userId);
+  //   followingList.push(userIdToUnfollow);
+
+  //   await user.update({
+  //     $pull: {
+  //       following: userIdToUnfollow,
+  //     },
+  //   });
+  //   await userToUnfollow.update({
+  //     $pull: {
+  //       followers: userId,
+  //     },
+  //   });
+
+  //   return res.status(httpStatus.OK).json({
+  //     message: 'Unfollowed successfully',
+  //   });
+  // } catch (error) {
+  //   console.error(error);
+  //   return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+  //     error: 'Error unfollowing user',
+  //   });
+  // }
 };
 
 module.exports = userController;

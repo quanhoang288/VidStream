@@ -4,6 +4,7 @@ module.exports = {
   JWT_SECRET: process.env.JWT_SECRET,
   MONGO_URI: process.env.MONGO_URI,
   PORT: process.env.PORT,
+  CLIENT_URL: process.env.CLIENT_URL,
   GOOGLE_DRIVE_API_VERSION: 'v3',
   GOOGLE_DRIVE_CLIENT_ID: process.env.GOOGLE_DRIVE_CLIENT_ID,
   GOOGLE_DRIVE_CLIENT_SECRET: process.env.GOOGLE_DRIVE_CLIENT_SECRET,

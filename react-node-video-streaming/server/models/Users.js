@@ -23,6 +23,14 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Assets',
   },
+  numFollowers: {
+    type: Number,
+    default: 0,
+  },
+  numFollowing: {
+    type: Number,
+    default: 0,
+  },
   followers: [
     {
       type: mongoose.Schema.Types.ObjectId,

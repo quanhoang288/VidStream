@@ -1,40 +1,48 @@
 import React, { useEffect, useState, useRef } from 'react';
 import CancelIcon from '@material-ui/icons/Cancel';
-
-import {
-  Button,
-  IconButton,
-  Popover,
-  Slider,
-  Typography,
-} from '@material-ui/core';
-
+import { useLocation } from 'react-router-dom';
+import { IconButton, Slider } from '@material-ui/core';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
-
+import VolumeOffIcon from '@material-ui/icons/VolumeOff';
 import FullScreenIcon from '@material-ui/icons/Fullscreen';
 import VolumeUpIcon from '@material-ui/icons/VolumeUp';
+import VolumeDownIcon from '@material-ui/icons/VolumeDown';
 import './VideoPlayer.css';
 import { API_BASE_URL } from '../../configs';
 
 function VideoPlayer(props) {
-  const { showBackButton, handleBack, videoId } = props;
+  const { showBackButton, handleBack, videoId, autoplay } = props;
   const videoRef = useRef();
 
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [volumeValue, setVolumeValue] = useState(100);
+  const [oldVolumeValue, setOldVolumeValue] = useState(100);
+  const [isPlaying, setPlaying] = useState(autoplay);
+  const [isToggleFullScreenMode, setToggleFullScreenMode] = useState(false);
+  const [isToggleMute, setToggleMute] = useState(false);
 
-  const open = Boolean(anchorEl);
-  const id = open ? 'playbackrate-popover' : undefined;
+  const location = useLocation();
 
-  const [isPlaying, setPlaying] = useState(false);
-
-  const handlePopover = (event) => {
-    setAnchorEl(event.currentTarget);
+  const renderVolumeIcon = (curVal) => {
+    if (curVal > 50) {
+      return <VolumeUpIcon />;
+    }
+    if (curVal > 0) {
+      return <VolumeDownIcon />;
+    }
+    return <VolumeOffIcon />;
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.onplay = () => {
+        setPlaying(true);
+      };
+      videoRef.current.onpause = () => {
+        setPlaying(false);
+      };
+    }
+  }, [videoRef]);
 
   useEffect(() => {
     if (isPlaying) {
@@ -44,98 +52,114 @@ function VideoPlayer(props) {
     }
   }, [isPlaying]);
 
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.volume = volumeValue / 100;
+    }
+  }, [volumeValue, videoRef]);
+
+  useEffect(() => {
+    if (isToggleFullScreenMode) {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        videoRef.current.requestFullscreen();
+      }
+      setToggleFullScreenMode(false);
+    }
+  }, [isToggleFullScreenMode]);
+
+  useEffect(() => {
+    if (isToggleMute && videoRef.current) {
+      if (videoRef.current.volume > 0) {
+        videoRef.current.volume = 0;
+        setOldVolumeValue(volumeValue);
+        setVolumeValue(0);
+      } else {
+        videoRef.current.volume = oldVolumeValue / 100;
+        setVolumeValue(oldVolumeValue);
+      }
+      setToggleMute(false);
+    }
+  }, [isToggleMute, oldVolumeValue, videoRef, volumeValue]);
+
   return (
     <div className="video__item__container">
-      <video name="media" className="video__player" ref={videoRef}>
+      <video
+        controls={location.pathname !== '/'}
+        name="media"
+        className="video__player"
+        playsInline
+        ref={videoRef}
+        autoPlay={autoplay}
+      >
         <source src={`${API_BASE_URL}/videos/${videoId}/stream`} />
       </video>
 
-      <div className="video__control__wrapper">
-        {showBackButton && (
-          <div className="back__btn">
-            <IconButton onClick={handleBack}>
-              <CancelIcon color="action" fontSize="large" />
-            </IconButton>
-          </div>
-        )}
-
-        <div className="video__bottom__control">
-          <div className="video__progress__bar">
-            <Slider color="secondary" />
-          </div>
-          <div className="bottom__control__btn__group">
-            <div className="left__btn__group">
-              <IconButton
-                className="control__icon"
-                onClick={() => setPlaying(!isPlaying)}
-              >
-                {isPlaying ? (
-                  <PauseIcon fontSize="medium" className="control__icon" />
-                ) : (
-                  <PlayArrowIcon fontSize="medium" className="control__icon" />
-                )}
+      {location.pathname === '/' && (
+        <div className="video__control__wrapper">
+          {showBackButton && (
+            <div className="back__btn">
+              <IconButton onClick={handleBack}>
+                <CancelIcon color="action" fontSize="large" />
               </IconButton>
+            </div>
+          )}
 
-              <div className="volume__area">
-                <IconButton className="control__icon volume__icon">
-                  <VolumeUpIcon fontSize="medium" />
+          <div className="video__bottom__control">
+            <div className="bottom__control__btn__group">
+              <div className="left__btn__group">
+                <IconButton
+                  className="control__icon"
+                  onClick={() => setPlaying(!isPlaying)}
+                >
+                  {isPlaying ? (
+                    <PauseIcon className="control__icon" />
+                  ) : (
+                    <PlayArrowIcon className="control__icon" />
+                  )}
                 </IconButton>
 
-                <div className="volume__slider">
-                  <Slider
-                    color="#fff"
-                    colormin={0}
-                    max={100}
-                    defaultValue={100}
-                  />
+                <div className="volume__area">
+                  <IconButton
+                    className="control__icon volume__icon"
+                    onClick={() => setToggleMute(true)}
+                  >
+                    {renderVolumeIcon(volumeValue)}
+                  </IconButton>
+
+                  <div className="volume__slider">
+                    <Slider
+                      colormin={0}
+                      max={100}
+                      onChange={(e, val) => setVolumeValue(val)}
+                      defaultValue={100}
+                      value={volumeValue}
+                    />
+                  </div>
                 </div>
               </div>
-
-              <Typography className="timetrack">05:05</Typography>
-            </div>
-            <div className="right__btn__group">
-              <Button
-                onClick={handlePopover}
-                variant="text"
-                className="control__icon"
-              >
-                <Typography>1X</Typography>
-              </Button>
-              <Popover
-                id={id}
-                open={open}
-                anchorEl={anchorEl}
-                onClose={handleClose}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'center',
-                }}
-                transformOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'center',
-                }}
-              >
-                <div className="playback__rate">
-                  {[0.5, 1, 1.5, 2].map((rate) => (
-                    <Button variant="text">
-                      <Typography>{rate}</Typography>
-                    </Button>
-                  ))}
-                </div>
-              </Popover>
-              <IconButton className="control__icon">
-                <FullScreenIcon fontSize="medium" />
-              </IconButton>
+              <div className="right__btn__group">
+                <IconButton
+                  className="control__icon"
+                  onClick={() =>
+                    setToggleFullScreenMode(!isToggleFullScreenMode)
+                  }
+                >
+                  <FullScreenIcon />
+                </IconButton>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
 
 VideoPlayer.defaultProps = {
   showBackButton: false,
+  autoplay: false,
 };
 
 export default VideoPlayer;

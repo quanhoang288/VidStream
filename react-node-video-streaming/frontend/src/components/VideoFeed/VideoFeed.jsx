@@ -35,12 +35,12 @@ function VideoFeed({ type, videos, onEndReached }) {
         ) : (
           videos.map((video, index) => (
             <InView
+              key={video._id}
               threshold={0.8}
               onChange={(inView) => handleRenderVideoElement(inView, index)}
             >
               <div className="video__feed__item">
                 <FeedItem
-                  key={video._id}
                   video={video}
                   shouldRenderVideo={curVideoIndex === index}
                 />

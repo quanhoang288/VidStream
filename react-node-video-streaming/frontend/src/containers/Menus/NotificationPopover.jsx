@@ -232,7 +232,7 @@ export default function NotificationsPopover() {
 
   return (
     <>
-      <IconButton ref={anchorRef} size="large" onClick={handleOpen}>
+      <IconButton ref={anchorRef} onClick={handleOpen}>
         {notifications.filter((noti) => noti.readAt === undefined).length >
         0 ? (
           <Badge
@@ -276,6 +276,7 @@ export default function NotificationsPopover() {
             notifications.map((notification, index) =>
               index === notifications.length - 1 ? (
                 <InView
+                  key={notification.id}
                   threshold={1}
                   onChange={(inView) => {
                     if (inView) {
@@ -283,16 +284,12 @@ export default function NotificationsPopover() {
                     }
                   }}
                 >
-                  <NotificationItem
-                    key={notification.id}
-                    notification={notification}
-                  />
+                  <NotificationItem notification={notification} />
                 </InView>
               ) : (
-                <NotificationItem
-                  key={notification.id}
-                  notification={notification}
-                />
+                <div key={notification.id}>
+                  <NotificationItem notification={notification} />
+                </div>
               ),
             )
           )}

@@ -39,6 +39,8 @@ module.exports = {
     'react/jsx-curly-newline': 0,
     'react/jsx-boolean-value': 0,
     'import/prefer-default-export': 0,
+    'import/no-named-as-default': 0,
+    'import/no-named-as-default-member': 0,
     'jsx-a11y/no-static-element-interactions': 0,
     'jsx-a11y/media-has-caption': 0,
     'jsx-a11y/anchor-is-valid': 0,

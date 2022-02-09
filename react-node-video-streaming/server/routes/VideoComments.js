@@ -30,4 +30,16 @@ videoCommentRoutes.post(
   asyncWrapper(videoCommentController.remove),
 );
 
+videoCommentRoutes.post(
+  '/:commentId/like',
+  auth,
+  asyncWrapper(videoCommentController.likeComment),
+);
+
+videoCommentRoutes.post(
+  '/:commentId/unlike',
+  auth,
+  asyncWrapper(videoCommentController.unlikeComment),
+);
+
 module.exports = videoCommentRoutes;

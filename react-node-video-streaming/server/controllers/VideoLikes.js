@@ -1,4 +1,5 @@
 const VideoModel = require('../models/Videos');
+const LikeModel = require('../models/VideoLikes');
 const httpStatus = require('../utils/httpStatus');
 
 const videoLikeController = {};
@@ -14,23 +15,26 @@ videoLikeController.create = async (req, res) => {
       });
     }
 
-    const videoLikes = video.likes || [];
+    const existingLike = await LikeModel.findOne({
+      user: userId,
+      video: videoId,
+    });
 
-    if (videoLikes.includes(userId)) {
-      return res.status(httpStatus.OK).json({
+    if (existingLike) {
+      return res.status(httpStatus.BAD_REQUEST).json({
         message: 'Already liked this video',
       });
     }
 
-    videoLikes.push(userId);
-
-    const updatedVideo = await video.update({
-      likes: videoLikes,
-      isLiked: true,
+    const newLike = new LikeModel({
+      user: userId,
+      video: videoId,
     });
+    const createdLike = await newLike.save();
+    await video.update({ numLikes: video.numLikes + 1 });
 
     return res.status(httpStatus.CREATED).json({
-      video: updatedVideo,
+      like: createdLike,
     });
   } catch (error) {
     console.error(error);
@@ -51,26 +55,22 @@ videoLikeController.remove = async (req, res) => {
       });
     }
 
-    const videoLikes = video.likes || [];
+    const existingLike = await LikeModel.findOne({
+      user: userId,
+      liked: videoId,
+    });
 
-    if (!videoLikes.includes(userId)) {
+    if (!existingLike) {
       return res.status(httpStatus.BAD_REQUEST).json({
         error: 'Not liked this video yet',
       });
     }
 
-    const updatedVideo = await VideoModel.findOneAndUpdate(
-      { _id: videoId },
-      {
-        isLiked: false,
-        $pull: {
-          likes: userId,
-        },
-      },
-    );
+    const deletedLike = await LikeModel.findByIdAndDelete(existingLike._id);
+    await video.update({ numLikes: video.numLikes - 1 });
 
     return res.status(httpStatus.OK).json({
-      video: updatedVideo,
+      deletedLike,
     });
   } catch (error) {
     console.error(error);

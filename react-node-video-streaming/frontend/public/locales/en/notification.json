@@ -1,0 +1,6 @@
+{
+  "NOTIFICATION_LIKE_VIDEO": "{{username}} liked your video",
+  "NOTIFICATION_COMMENT": "{{username}} commmented on your video",
+  "NOTIFICATION_FOLLOW": "{{username}} has followed you",
+  "NO_NOTIFICATIONS": "You have no notifications yet"
+}

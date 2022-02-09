@@ -1,0 +1,16 @@
+{
+  "UPLOAD_TITLE": "Upload video",
+  "UPLOAD_SUBTITLE": "Upload video to your account",
+  "UPLOAD_SECTION_TITLE": "Choose video to upload",
+  "VIDEO_FORMAT": "MP4 or WebM",
+  "VIDEO_DURATION": "No longer than 5 minutes",
+  "VIDEO_SIZE": "No larger than 2GB",
+  "VIDEO_SELECT_BUTTON": "Choose video",
+  "VIDEO_SELECT_ANOTHER_BUTTON": "Choose another video",
+  "DESCRIPTION": "Description",
+  "RESTRICTION_TITLE": "Select who can see the video",
+  "RESTRICTION_PUBLIC": "Public",
+  "RESTRICTION_PRIVATE": "Private",
+  "UPLOAD_BUTTON": "Upload",
+  "CANCEL_BUTTON": "Cancel"
+}

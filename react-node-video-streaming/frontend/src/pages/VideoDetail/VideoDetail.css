@@ -1,11 +1,11 @@
 .video__detail__container {
   display: flex;
   flex-direction: row;
+  height: 100vh;
 }
 
 .video__player__container {
   width: 70%;
-  height: 100vh;
   position: relative;
 }
 
@@ -64,6 +64,7 @@
 }
 
 .comment__section {
+  flex: 1;
   height: 70vh;
   overflow-y: scroll;
   background-color: rgb(248, 248, 248);

@@ -14,6 +14,9 @@ import './VideoUpload.css';
 import nprogress from 'nprogress';
 import 'nprogress/nprogress.css';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+
+import { useTranslation } from 'react-i18next';
 import { videoApi } from '../../apis';
 import Main from '../../containers/Main/Main';
 import Toast from '../../components/Toast/Toast';
@@ -22,21 +25,22 @@ import { errorMessages } from '../../constants/messages';
 // import ROUTES from '../../constants/route';
 
 function VideoUpload() {
+  const { t } = useTranslation(['upload']);
+
   const videoRestrictions = [
     {
       value: 'public',
-      label: 'Công khai',
+      label: t('RESTRICTION_PUBLIC', { ns: 'upload' }),
     },
     {
       value: 'private',
-      label: 'Riêng tư',
+      label: t('RESTRICTION_PRIVATE', { ns: 'upload' }),
     },
   ];
 
   const allowedMimeType = ['video/mp4', 'video/webm'];
 
-  // TODO: get authenticated user id
-  const userId = '61ab7f4e551a3940d0d5069e';
+  const user = useSelector((state) => state.auth.user);
 
   // const [isUploading, setUploading] = useState(false);
   const [videoFile, setVideoFile] = useState(null);
@@ -116,7 +120,7 @@ function VideoUpload() {
       videoFile,
       description,
       restriction,
-      userId,
+      userId: user.id,
     };
 
     try {
@@ -132,7 +136,7 @@ function VideoUpload() {
   };
 
   const handleViewProfile = () => {
-    history.push(`/profile/${userId}`);
+    history.push(`/profile/${user.id}`);
   };
 
   return (
@@ -170,9 +174,11 @@ function VideoUpload() {
           <Grid container spacing={1}>
             <Grid item xs={12}>
               <div className="video__upload__title">
-                <Typography variant="h4">Tải video lên</Typography>
+                <Typography variant="h4">
+                  {t('UPLOAD_TITLE', { ns: 'upload' })}
+                </Typography>
                 <Typography variant="h5">
-                  Đăng video vào tài khoản của bạn
+                  {t('UPLOAD_SUBTITLE', { ns: 'upload' })}
                 </Typography>
               </div>
             </Grid>
@@ -189,16 +195,16 @@ function VideoUpload() {
                     <div className="video__upload__instruction">
                       <CloudUploadIcon fontSize="large" />
                       <Typography variant="h6">
-                        Chọn video để tải lên
+                        {t('UPLOAD_SECTION_TITLE', { ns: 'upload' })}
                       </Typography>
                       <Typography className="video__upload__mimetype">
-                        MP4 hoặc Webm
+                        {t('VIDEO_FORMAT', { ns: 'upload' })}
                       </Typography>
                       <Typography className="video__upload__duration">
-                        Tối đa 5 phút
+                        {t('VIDEO_DURATION', { ns: 'upload' })}
                       </Typography>
                       <Typography className="video__upload__size">
-                        Nhỏ hơn 2 GB
+                        {t('VIDEO_SIZE', { ns: 'upload' })}
                       </Typography>
                     </div>
                   )}
@@ -208,7 +214,9 @@ function VideoUpload() {
                     component="label"
                   >
                     <Typography>
-                      {videoFile ? 'Chọn video khác' : 'Chọn video'}
+                      {videoFile
+                        ? t('VIDEO_SELECT_ANOTHER_BUTTON', { ns: 'upload' })
+                        : t('VIDEO_SELECT_BUTTON', { ns: 'upload' })}
                     </Typography>
                     <input
                       type="file"
@@ -225,7 +233,7 @@ function VideoUpload() {
               <Grid item xs={8}>
                 <form onSubmit={handleSubmit}>
                   <TextField
-                    label="Chú thích"
+                    label={t('DESCRIPTION', { ns: 'upload' })}
                     margin="normal"
                     fullWidth
                     variant="standard"
@@ -242,7 +250,7 @@ function VideoUpload() {
                       htmlFor="restrict-options"
                       className="form__input__label"
                     >
-                      Ai có thể xem video này
+                      {t('RESTRICTION_TITLE', { ns: 'upload' })}
                     </InputLabel>
                     <Select
                       native
@@ -269,7 +277,7 @@ function VideoUpload() {
                       id="cancel__btn"
                       onClick={() => setConfirmModalVisible(true)}
                     >
-                      Hủy
+                      {t('CANCEL_BUTTON', { ns: 'upload' })}
                     </Button>
                     <Button
                       variant="contained"
@@ -277,7 +285,7 @@ function VideoUpload() {
                       disabled={videoFile === null}
                       onClick={handleSubmit}
                     >
-                      Đăng
+                      {t('UPLOAD_BUTTON', { ns: 'upload' })}
                     </Button>
                   </div>
                 </form>

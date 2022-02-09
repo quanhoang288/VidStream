@@ -11,194 +11,76 @@ import {
 } from '@material-ui/core';
 import HomeIcon from '@material-ui/icons/Home';
 import PeopleIcon from '@material-ui/icons/People';
+import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { ASSET_BASE_URL } from '../../configs';
 import './Sidebar.css';
 
-function Sidebar() {
+function Sidebar(props) {
+  const {
+    suggestedAccounts,
+    selectedVideoOption,
+    videoListOptions,
+    onSelectVideoOption,
+  } = props;
+
+  const { t } = useTranslation();
+
+  const history = useHistory();
+
   return (
     <div className="sidebar__overlay">
       <div className="sidebar__container">
         <div className="video__categories">
-          <Typography variant="h6">Kham pha noi dung</Typography>
+          <Typography variant="h6">{t('DISCOVER_CONTENT')}</Typography>
           <List>
-            {['Danh cho ban', 'Dang theo doi'].map((text, index) => (
-              <ListItem button key={text} className="category__item">
+            {videoListOptions.map((option) => (
+              <ListItem
+                button
+                selected={selectedVideoOption === option.value}
+                key={option.value}
+                className="category__item"
+                onClick={() => onSelectVideoOption(option.value)}
+              >
                 <ListItemIcon>
-                  {index === 0 ? (
+                  {option.value === 'suggestion' ? (
                     <HomeIcon fontSize="large" />
                   ) : (
                     <PeopleIcon fontSize="large" />
                   )}
                 </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary={option.label} />
               </ListItem>
             ))}
           </List>
         </div>
         <Divider />
         <div className="suggested__accs mt__1">
-          <Typography variant="h6">Tai khoan duoc goi y</Typography>
+          <Typography variant="h6">{t('SUGGESTED_ACCOUNTS')}</Typography>
           <List>
-            <ListItem button key={1} className="category__item">
-              <ListItemAvatar>
-                <Avatar
-                  alt="Quan Hoang"
-                  src="'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                />
-              </ListItemAvatar>
-              <ListItemText primary="Quan Hoang" />
-            </ListItem>
-            <ListItem button key={2} className="category__item">
-              <ListItemAvatar>
-                <Avatar
-                  alt="Quan Hoang"
-                  src="'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                />
-              </ListItemAvatar>
-              <ListItemText primary="Quan Hoang" />
-            </ListItem>
-            <ListItem button key={3} className="category__item">
-              <ListItemAvatar>
-                <Avatar
-                  alt="Quan Hoang"
-                  src="'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                />
-              </ListItemAvatar>
-              <ListItemText primary="Quan Hoang" />
-            </ListItem>
-            <ListItem button key={1} className="category__item">
-              <ListItemAvatar>
-                <Avatar
-                  alt="Quan Hoang"
-                  src="'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                />
-              </ListItemAvatar>
-              <ListItemText primary="Quan Hoang" />
-            </ListItem>
-            <ListItem button key={2} className="category__item">
-              <ListItemAvatar>
-                <Avatar
-                  alt="Quan Hoang"
-                  src="'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                />
-              </ListItemAvatar>
-              <ListItemText primary="Quan Hoang" />
-            </ListItem>
-            <ListItem button key={3} className="category__item">
-              <ListItemAvatar>
-                <Avatar
-                  alt="Quan Hoang"
-                  src="'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                />
-              </ListItemAvatar>
-              <ListItemText primary="Quan Hoang" />
-            </ListItem>
-            <ListItem button key={1} className="category__item">
-              <ListItemAvatar>
-                <Avatar
-                  alt="Quan Hoang"
-                  src="'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                />
-              </ListItemAvatar>
-              <ListItemText primary="Quan Hoang" />
-            </ListItem>
-            <ListItem button key={2} className="category__item">
-              <ListItemAvatar>
-                <Avatar
-                  alt="Quan Hoang"
-                  src="'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                />
-              </ListItemAvatar>
-              <ListItemText primary="Quan Hoang" />
-            </ListItem>
+            {suggestedAccounts &&
+              suggestedAccounts.map((acc) => (
+                <ListItem
+                  button
+                  key={acc._id}
+                  className="category__item"
+                  onClick={() => history.push(`/profile/${acc._id}`)}
+                >
+                  <ListItemAvatar>
+                    <Avatar
+                      alt={acc.username}
+                      src={
+                        acc.avatar
+                          ? `${ASSET_BASE_URL}/${acc.avatar.fileName}`
+                          : `${ASSET_BASE_URL}/no_avatar.jpg`
+                      }
+                    />
+                  </ListItemAvatar>
+                  <ListItemText primary={acc.username} />
+                </ListItem>
+              ))}
           </List>
         </div>
-        {/* <Divider />
-        <div className="suggested__accs mt__1">
-          <Typography variant="h6">Tai khoan dang theo doi</Typography>
-          <List>
-            <ListItem button key={1} className="sidebar__item">
-              <ListItemAvatar>
-                <Avatar
-                  alt="Quan Hoang"
-                  src="'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                />
-              </ListItemAvatar>
-              <ListItemText primary="Hoang Quan" />
-            </ListItem>
-            <ListItem button key={2} className="sidebar__item">
-              <ListItemAvatar>
-                <Avatar
-                  alt="Quan Hoang"
-                  src="'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                />
-              </ListItemAvatar>
-              <ListItemText primary="Quan Hoang" />
-            </ListItem>
-            <ListItem button key={3} className="sidebar__item">
-              <ListItemAvatar>
-                <Avatar
-                  alt="Quan Hoang"
-                  src="'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                />
-              </ListItemAvatar>
-              <ListItemText primary="Quan Hoang" />
-            </ListItem>
-            <ListItem button key={3} className="sidebar__item">
-              <ListItemAvatar>
-                <Avatar
-                  alt="Quan Hoang"
-                  src="'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                />
-              </ListItemAvatar>
-              <ListItemText primary="Quan Hoang" />
-            </ListItem>
-            <ListItem button key={3} className="sidebar__item">
-              <ListItemAvatar>
-                <Avatar
-                  alt="Quan Hoang"
-                  src="'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                />
-              </ListItemAvatar>
-              <ListItemText primary="Quan Hoang" />
-            </ListItem>
-            <ListItem button key={3} className="sidebar__item">
-              <ListItemAvatar>
-                <Avatar
-                  alt="Quan Hoang"
-                  src="'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                />
-              </ListItemAvatar>
-              <ListItemText primary="Quan Hoang" />
-            </ListItem>
-            <ListItem button key={3} className="sidebar__item">
-              <ListItemAvatar>
-                <Avatar
-                  alt="Quan Hoang"
-                  src="'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                />
-              </ListItemAvatar>
-              <ListItemText primary="Quan Hoang" />
-            </ListItem>
-            <ListItem button key={3} className="sidebar__item">
-              <ListItemAvatar>
-                <Avatar
-                  alt="Quan Hoang"
-                  src="'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                />
-              </ListItemAvatar>
-              <ListItemText primary="Quan Hoang" />
-            </ListItem>
-            <ListItem button key={3} className="sidebar__item">
-              <ListItemAvatar>
-                <Avatar
-                  alt="Quan Hoang"
-                  src="'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-                />
-              </ListItemAvatar>
-              <ListItemText primary="Quan Hoang" />
-            </ListItem>
-          </List>
-        </div> */}
       </div>
     </div>
   );

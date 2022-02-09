@@ -65,19 +65,14 @@ function VideoPlayer(props) {
           </div>
           <div className="bottom__control__btn__group">
             <div className="left__btn__group">
-              <IconButton className="control__icon">
+              <IconButton
+                className="control__icon"
+                onClick={() => setPlaying(!isPlaying)}
+              >
                 {isPlaying ? (
-                  <PauseIcon
-                    fontSize="medium"
-                    className="control__icon"
-                    onClick={() => setPlaying(false)}
-                  />
+                  <PauseIcon fontSize="medium" className="control__icon" />
                 ) : (
-                  <PlayArrowIcon
-                    fontSize="medium"
-                    className="control__icon"
-                    onClick={() => setPlaying(true)}
-                  />
+                  <PlayArrowIcon fontSize="medium" className="control__icon" />
                 )}
               </IconButton>
 

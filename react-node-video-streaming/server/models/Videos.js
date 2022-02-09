@@ -28,15 +28,12 @@ const videoSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Assets',
   },
-  likes: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Users',
-    },
-  ],
+  numLikes: {
+    type: Number,
+    default: 0,
+  },
   numComments: {
     type: Number,
-    required: false,
     default: 0,
   },
   restriction: {
@@ -50,6 +47,10 @@ const videoSchema = new mongoose.Schema({
   remoteId: {
     type: String,
     required: true,
+  },
+  deletedAt: {
+    type: mongoose.Schema.Types.Date,
+    required: false,
   },
 });
 

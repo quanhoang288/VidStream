@@ -1,4 +1,5 @@
 import authReducer from './authReducer';
 import modalReducer from './modalReducer';
+import notificationReducer from './notificationReducer';
 
-export { authReducer, modalReducer };
+export { authReducer, modalReducer, notificationReducer };

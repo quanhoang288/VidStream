@@ -14,6 +14,7 @@ import { API_BASE_URL } from '../../configs';
 function VideoPlayer(props) {
   const { showBackButton, handleBack, videoId, autoplay } = props;
   const videoRef = useRef();
+  console.log('show back: ', showBackButton);
 
   const [volumeValue, setVolumeValue] = useState(100);
   const [oldVolumeValue, setOldVolumeValue] = useState(100);

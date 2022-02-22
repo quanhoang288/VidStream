@@ -1,4 +1,7 @@
 {
+  "EDIT_TITLE": "Edit post",
+  "DELETE_TITLE": "Delete post",
+  "DELETE_DESCRIPTION": "This post will be removed from your profile",
   "UPLOAD_TITLE": "Upload video",
   "UPLOAD_SUBTITLE": "Upload video to your account",
   "UPLOAD_SECTION_TITLE": "Choose video to upload",
@@ -12,5 +15,6 @@
   "RESTRICTION_PUBLIC": "Public",
   "RESTRICTION_PRIVATE": "Private",
   "UPLOAD_BUTTON": "Upload",
-  "CANCEL_BUTTON": "Cancel"
+  "CANCEL_BUTTON": "Cancel",
+  "SAVE_BUTTON": "Save"
 }

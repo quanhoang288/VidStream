@@ -2,6 +2,8 @@ import React from 'react';
 import { Button } from '@material-ui/core';
 import { useHistory, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+
 import Modal from '../Modal/Modal';
 import './FollowList.css';
 import { ASSET_BASE_URL } from '../../configs';
@@ -16,6 +18,8 @@ function FollowList(props) {
     isOwnProfile,
   } = props;
 
+  const { t } = useTranslation();
+
   const history = useHistory();
 
   const authUser = useSelector((state) => state.auth.user);
@@ -26,7 +30,11 @@ function FollowList(props) {
         {users.map((user) => (
           <div className="user__item" style={{ display: 'flex' }}>
             <img
-              src={`${ASSET_BASE_URL}/${user.avatar.fileName}`}
+              src={
+                user.avatar && user.avatar.fileName
+                  ? `${ASSET_BASE_URL}/${user.avatar.fileName}`
+                  : `${ASSET_BASE_URL}/no_avatar.jpg`
+              }
               alt="Profile"
               className="user__item__avatar"
               onClick={() => history.push(`/profile/${user._id}`)}
@@ -42,7 +50,7 @@ function FollowList(props) {
                 style={{ maxHeight: '30px' }}
                 onClick={() => handleToggleFollow(user._id, user.isFollowing)}
               >
-                {user.isFollowing ? 'Following' : 'Follow'}
+                {user.isFollowing ? t('FOLLOWING_BUTTON') : t('FOLLOW_BUTTON')}
               </Button>
             )}
           </div>

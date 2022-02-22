@@ -8,5 +8,13 @@
   "VIDEOS": "video",
   "FOLLOWERS": "theo dõi",
   "FOLLOWING": "đang theo dõi",
-  "NOW": "vừa xong"
+  "EDIT_PROFILE_BUTTON": "Chỉnh sửa cá nhân",
+  "NOW": "vừa xong",
+  "VIEW_PROFILE": "Xem hồ sơ",
+  "LOGOUT": "Đăng xuất",
+  "NO_COMMENT": "Chưa có bình luận nào",
+  "LOGIN_TO_COMMENT_TITLE": "Đăng nhập để xem bình luận",
+  "LOGIN_TO_COMMENT_DESCRIPTION": "Đăng nhập để xem bình luận và thích video",
+  "ADD_COMMENT_HELPER_TEXT": "Thêm bình luận",
+  "ADD_COMMENT_BUTTON": "Đăng"
 }

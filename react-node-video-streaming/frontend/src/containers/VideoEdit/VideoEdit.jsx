@@ -9,30 +9,51 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/CheckCircle';
+import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
 
 import { useSelector } from 'react-redux';
 import Modal from '../../components/Modal/Modal';
 import { videoApi } from '../../apis';
 
-const videoRestrictions = [
-  {
-    value: 'public',
-    label: 'Công khai',
-  },
-  {
-    value: 'private',
-    label: 'Riêng tư',
-  },
-];
-const allowedMimeType = ['video/mp4', 'video/webm'];
+function VideoEdit({
+  videoId,
+  videoInfo,
+  isModalVisible,
+  handleClose,
+  // onSuccess,
+}) {
+  const { t } = useTranslation(['upload']);
 
-function VideoEdit({ videoId, isModalVisible, handleClose, onSuccess }) {
-  const [description, setDescription] = useState('test');
-  const [restriction, setRestriction] = useState(videoRestrictions[0].value);
+  const videoRestrictions = [
+    {
+      value: 'public',
+      label: t('RESTRICTION_PUBLIC', { ns: 'upload' }),
+    },
+    {
+      value: 'private',
+      label: t('RESTRICTION_PRIVATE', { ns: 'upload' }),
+    },
+  ];
+  const allowedMimeType = ['video/mp4', 'video/webm'];
+
+  const [description, setDescription] = useState(videoInfo.description || '');
+  const [restriction, setRestriction] = useState(
+    videoInfo.restriction || videoRestrictions[0].value,
+  );
   const [videoFile, setVideoFile] = useState(null);
   const [isEditing, setEditing] = useState(false);
 
   const authUser = useSelector((state) => state.auth.user);
+
+  const history = useHistory();
+
+  useEffect(() => {
+    if (videoInfo.description && videoInfo.restriction) {
+      setDescription(videoInfo.description);
+      setRestriction(videoInfo.restriction);
+    }
+  }, [videoInfo]);
 
   const validateFileInput = (file) => {
     const { size } = file;
@@ -68,7 +89,7 @@ function VideoEdit({ videoId, isModalVisible, handleClose, onSuccess }) {
 
   const handleEditVideo = useCallback(async () => {
     try {
-      const res = await videoApi.editVideo(
+      await videoApi.editVideo(
         videoId,
         videoFile,
         description,
@@ -76,7 +97,8 @@ function VideoEdit({ videoId, isModalVisible, handleClose, onSuccess }) {
         authUser.token,
       );
       setEditing(false);
-      onSuccess(res.data.video);
+      history.go(0);
+      // onSuccess(res.data.video);
     } catch (error) {
       console.log(error);
     }
@@ -90,13 +112,15 @@ function VideoEdit({ videoId, isModalVisible, handleClose, onSuccess }) {
 
   return (
     <Modal
-      title="Edit post"
+      title={t('EDIT_TITLE', { ns: 'upload' })}
       isModalVisible={isModalVisible}
       handleClose={handleClose}
     >
       <div>
         <Button variant="contained" color="secondary" component="label">
-          <Typography>Choose another video</Typography>
+          <Typography>
+            {t('VIDEO_SELECT_ANOTHER_BUTTON', { ns: 'upload' })}
+          </Typography>
           <input type="file" name="video" onChange={handleFileInput} hidden />
         </Button>
         {videoFile && (
@@ -107,7 +131,7 @@ function VideoEdit({ videoId, isModalVisible, handleClose, onSuccess }) {
         )}
 
         <TextField
-          label="Chú thích"
+          label={t('DESCRIPTION', { ns: 'upload' })}
           margin="normal"
           fullWidth
           variant="standard"
@@ -121,7 +145,7 @@ function VideoEdit({ videoId, isModalVisible, handleClose, onSuccess }) {
         />
         <FormControl fullWidth>
           <InputLabel htmlFor="restrict-options" className="form__input__label">
-            Ai có thể xem video này
+            {t('RESTRICTION_TITLE', { ns: 'upload' })}
           </InputLabel>
           <Select
             native
@@ -148,7 +172,7 @@ function VideoEdit({ videoId, isModalVisible, handleClose, onSuccess }) {
             {isEditing ? (
               <CircularProgress size={20} color="inherit" />
             ) : (
-              'Save'
+              t('SAVE_BUTTON', { ns: 'upload' })
             )}
           </Button>
         </div>

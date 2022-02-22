@@ -244,6 +244,8 @@ userController.getVideoGallery = async (req, res) => {
     const authorId = req.params.id;
     const { lastObjectId, limit } = req.paginationParams;
 
+    console.log('pagination params: ', req.paginationParams);
+
     let videoFilter = {
       uploadedBy: authorId,
       status: { $ne: VIDEO_STATUS_DELETED },
@@ -294,14 +296,14 @@ userController.getSuggestedList = async (req, res) => {
     if (userId) {
       const followingList = await FollowModel.find({ following: userId });
       filter._id = {
-        $nin: followingList.map((follow) => follow.user),
+        $nin: [...followingList.map((follow) => follow.user), userId],
       };
     }
     const suggestedList = await UserModel.find(filter)
       .sort({ numFollowers: -1 })
       .select('_id username avatar numFollowers numFollowing')
       .populate('avatar', 'fileName')
-      .limit(10);
+      .limit(15);
     return res.status(httpStatus.OK).json({ suggestedList });
   } catch (error) {
     console.log(error);

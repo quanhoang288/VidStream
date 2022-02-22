@@ -61,10 +61,21 @@ function FeedItem({ video, shouldRenderVideo }) {
   }, [user, video]);
 
   const handleToggleFollow = useCallback(async () => {
+    if (!user) {
+      dispatch(showModal());
+      return;
+    }
     if (isFollowingAuthor) {
       await userApi.unfollow(video.uploadedBy._id, user.token);
     } else {
       await userApi.follow(video.uploadedBy._id, user.token);
+      const createRes = await notificationApi.create(
+        'FOLLOW',
+        video.uploadedBy._id,
+        null,
+        user.token,
+      );
+      socket.emit('SEND_NOTIFICATION', createRes.data.notification);
     }
     setFollowingAuthor(!isFollowingAuthor);
   }, [isFollowingAuthor, user, video]);
@@ -130,7 +141,10 @@ function FeedItem({ video, shouldRenderVideo }) {
         </div>
         <div className="video__action__bar">
           {shouldRenderVideo ? (
-            <VideoPlayer videoId={video._id} />
+            <VideoPlayer
+              videoId={video._id}
+              poster={`${ASSET_BASE_URL}/${video.thumbnail.fileName}`}
+            />
           ) : (
             <div className="video__item__container">
               <img

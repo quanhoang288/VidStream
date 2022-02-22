@@ -97,6 +97,7 @@ function VideoUpload() {
     setVideoFile(null);
     setDescription('');
     setRestriction(videoRestrictions[0].value);
+    setUploadSuccess(false);
     setConfirmModalVisible(false);
   };
 

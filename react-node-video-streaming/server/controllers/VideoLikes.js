@@ -57,7 +57,7 @@ videoLikeController.remove = async (req, res) => {
 
     const existingLike = await LikeModel.findOne({
       user: userId,
-      liked: videoId,
+      video: videoId,
     });
 
     if (!existingLike) {

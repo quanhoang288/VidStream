@@ -1,4 +1,7 @@
 {
+  "EDIT_TITLE": "Chỉnh sửa bài đăng",
+  "DELETE_TITLE": "Xóa bài đăng",
+  "DELETE_DESCRIPTION": "Bài đăng sẽ bị xóa khỏi tường của bạn",
   "UPLOAD_TITLE": "Tải video lên",
   "UPLOAD_SUBTITLE": "Đăng video vào tài khoản của bạn",
   "UPLOAD_SECTION_TITLE": "Chọn video để tải lên",
@@ -12,5 +15,7 @@
   "RESTRICTION_PUBLIC": "Công khai",
   "RESTRICTION_PRIVATE": "Riêng tư",
   "UPLOAD_BUTTON": "Đăng",
-  "CANCEL_BUTTON": "Hủy"
+  "CANCEL_BUTTON": "Hủy",
+  "DELETE_BUTTON": "Xóa",
+  "SAVE_BUTTON": "Lưu"
 }

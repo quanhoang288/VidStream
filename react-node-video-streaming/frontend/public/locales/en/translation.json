@@ -8,5 +8,13 @@
   "VIDEOS": "videos",
   "FOLLOWERS": "followers",
   "FOLLOWING": "following",
-  "NOW": "just now"
+  "EDIT_PROFILE_BUTTON": "Edit profile",
+  "NOW": "just now",
+  "VIEW_PROFILE": "View profile",
+  "LOGOUT": "Log out",
+  "NO_COMMENT": "No comments yet",
+  "LOGIN_TO_COMMENT_TITLE": "Log in to see comments",
+  "LOGIN_TO_COMMENT_DESCRIPTION": "Log in to see comments and like the video",
+  "ADD_COMMENT_HELPER_TEXT": "Add a comment",
+  "ADD_COMMENT_BUTTON": "Post"
 }

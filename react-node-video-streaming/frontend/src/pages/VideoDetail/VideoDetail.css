@@ -5,8 +5,12 @@
 }
 
 .video__player__container {
+  /* margin: 60px 0px;
   width: 70%;
-  position: relative;
+  position: relative; */
+  padding: 100px 0px;
+  height: 100%;
+  background: rgb(248, 248, 248);
 }
 
 .video__meta__info {
@@ -102,6 +106,7 @@
   font-weight: bold;
   font-size: 18px;
   line-height: 25px;
+  color: #000;
 }
 
 .comment__item__content .comment__text__content {

@@ -35,15 +35,15 @@ function Home() {
   const dispatch = useDispatch();
   const authUser = useSelector((state) => state.auth.user);
 
-  const handleLoadMore = async (lastId) => {
-    try {
-      const result = await videoApi.getSuggestedList(lastId);
-      setVideos(videos.concat(result.data.suggestedList));
-      setLoadMore(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const handleLoadMore = async (lastId) => {
+  //   try {
+  //     const result = await videoApi.getSuggestedList(lastId);
+  //     setVideos(videos.concat(result.data.suggestedList));
+  //     setLoadMore(false);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const fetchSuggestedList = async (userId) => {
     try {
@@ -107,7 +107,8 @@ function Home() {
 
   useEffect(() => {
     if (shouldLoadMore) {
-      handleLoadMore(lastVideoId);
+      console.log('load more: ', shouldLoadMore);
+      // handleLoadMore(lastVideoId);
     }
   }, [shouldLoadMore, lastVideoId]);
 

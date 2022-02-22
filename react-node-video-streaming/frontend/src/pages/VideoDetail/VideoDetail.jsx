@@ -4,10 +4,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import InsertCommentIcon from '@material-ui/icons/InsertComment';
-import { Button, IconButton, MenuItem, TextField } from '@material-ui/core';
+import {
+  Button,
+  IconButton,
+  MenuItem,
+  TextField,
+  Typography,
+} from '@material-ui/core';
 import { InView } from 'react-intersection-observer';
 import PulseLoader from 'react-spinners/PulseLoader';
+import CancelIcon from '@material-ui/icons/Cancel';
 
+import { useTranslation } from 'react-i18next';
 import VideoPlayer from '../../components/VideoPlayer/VideoPlayer';
 import VideoEdit from '../../containers/VideoEdit/VideoEdit';
 import './VideoDetail.css';
@@ -71,7 +79,9 @@ function CommentItem({ comment, handleToggleLikeComment }) {
 }
 
 function VideoDetail() {
-  const [videoId, setVideoId] = useState(null);
+  const params = useParams();
+
+  const [videoId, setVideoId] = useState(params ? params.videoId : null);
   const [commentText, setCommentText] = useState('');
   const [videoInfo, setVideoInfo] = useState({});
   const [videoComments, setVideoComments] = useState([]);
@@ -81,6 +91,8 @@ function VideoDetail() {
   const [isDeleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
   const [shouldLoadMore, setLoadMore] = useState(false);
   const [lastCommentId, setLastCommentId] = useState(false);
+
+  const { t } = useTranslation(['auth', 'upload', 'translation']);
 
   const advanceRef = useRef(null);
   const commentSectionRef = useRef(null);
@@ -93,7 +105,6 @@ function VideoDetail() {
   const user = useSelector((state) => state.auth.user);
 
   const dispatch = useDispatch();
-  const params = useParams();
 
   const fetchVideoInfo = async (id, userId) => {
     try {
@@ -141,6 +152,7 @@ function VideoDetail() {
       const createRes = await notificationApi.create(
         'FOLLOW',
         videoInfo.uploadedBy._id,
+        null,
         user.token,
       );
       socket.emit('SEND_NOTIFICATION', createRes.data.notification);
@@ -160,7 +172,7 @@ function VideoDetail() {
         await videoLikeApi.likeVideo(videoInfo._id, user.token);
         if (user.id !== videoInfo.uploadedBy._id) {
           const createRes = await notificationApi.create(
-            'like',
+            'LIKE_VIDEO',
             videoInfo.uploadedBy._id,
             videoInfo._id,
             user.token,
@@ -328,42 +340,79 @@ function VideoDetail() {
       <AuthHandler />
       <VideoEdit
         videoId={videoId}
+        videoInfo={videoInfo}
         isModalVisible={isEditModalVisible}
         handleClose={() => setEditModalVisible(false)}
         onSuccess={handleRefresh}
       />
       <ConfirmDialog
-        title="Delete post"
-        description="This post will be removed from your profile"
-        confirmTitle="Delete"
-        cancelTitle="Cancel"
+        title={t('DELETE_TITLE', { ns: 'upload' })}
+        description={t('DELETE_DESCRIPTION', { ns: 'upload' })}
+        confirmTitle={t('DELETE_BUTTON', { ns: 'upload' })}
+        cancelTitle={t('CANCEL_BUTTON', { ns: 'upload' })}
         isModalVisible={isDeleteConfirmVisible}
         handleCancel={() => setDeleteConfirmVisible(false)}
         handleConfirm={handleDeleteVideo}
       />
       <div className="video__detail__container">
-        <div className="video__player__container">
-          <VideoPlayer
-            showBackButton={true}
-            handleBack={() => history.goBack()}
-            videoId={videoId}
-          />
+        <div
+          style={{
+            position: 'absolute',
+            zIndex: 1,
+          }}
+        >
+          <IconButton onClick={() => history.goBack()}>
+            <CancelIcon color="action" fontSize="large" />
+          </IconButton>
+        </div>
+        <div
+          style={{
+            width: '70%',
+            position: 'relative',
+          }}
+        >
+          <div className="video__player__container">
+            <VideoPlayer
+              // showBackButton={true}
+              handleBack={() => history.goBack()}
+              videoId={videoId}
+              poster={
+                videoInfo.thumbnail
+                  ? `${ASSET_BASE_URL}/${videoInfo.thumbnail.fileName}`
+                  : null
+              }
+            />
+          </div>
         </div>
         <div className="video__meta__info">
           <div className="info__container">
             <div className="video__author__info">
-              <a href="#" className="comment__item__avatar">
+              <a
+                href={
+                  videoInfo.uploadedBy
+                    ? `/profile/${videoInfo.uploadedBy._id}`
+                    : '#'
+                }
+                className="comment__item__avatar"
+              >
                 <img
                   src={
-                    videoInfo.uploadedBy
+                    videoInfo.uploadedBy && videoInfo.uploadedBy.avatar
                       ? `${ASSET_BASE_URL}/${videoInfo.uploadedBy.avatar.fileName}`
-                      : null
+                      : `${ASSET_BASE_URL}/no_avatar.jpg`
                   }
                   alt="Profile"
                   width={50}
                 />
               </a>
-              <a href="#" className="author__name">
+              <a
+                href={
+                  videoInfo.uploadedBy
+                    ? `/profile/${videoInfo.uploadedBy._id}`
+                    : '#'
+                }
+                className="author__name"
+              >
                 <span>
                   {videoInfo.uploadedBy ? videoInfo.uploadedBy.username : null}
                 </span>
@@ -377,7 +426,9 @@ function VideoDetail() {
                   style={{ maxHeight: '30px' }}
                   onClick={handleToggleFollow}
                 >
-                  {isFollowingAuthor ? 'Following' : 'Follow'}
+                  {isFollowingAuthor
+                    ? t('FOLLOWING_BUTTON', { ns: 'translation' })
+                    : t('FOLLOW_BUTTON', { ns: 'translation' })}
                 </Button>
               )}
               {user &&
@@ -401,7 +452,7 @@ function VideoDetail() {
                     setEditModalVisible(true);
                   }}
                 >
-                  Edit post
+                  {t('EDIT_TITLE', { ns: 'upload' })}
                 </MenuItem>
                 <MenuItem
                   onClick={() => {
@@ -409,7 +460,7 @@ function VideoDetail() {
                     setDeleteConfirmVisible(true);
                   }}
                 >
-                  Delete post
+                  {t('DELETE_TITLE', { ns: 'upload' })}
                 </MenuItem>
               </MenuPopover>
             </div>
@@ -437,32 +488,47 @@ function VideoDetail() {
           {user ? (
             <>
               <div className="comment__section" ref={commentSectionRef}>
-                {videoComments.map((comment, idx) =>
-                  idx === 0 ? (
-                    <div key={comment._id} ref={firstCommentRef}>
-                      <CommentItem
-                        comment={comment}
-                        handleToggleLikeComment={handleToggleLikeComment}
-                      />
-                    </div>
-                  ) : (
-                    <InView
-                      threshold={1}
-                      root={commentSectionRef.current}
-                      onChange={(inView) => {
-                        if (inView && idx === videoComments.length - 1) {
-                          setLoadMore(true);
-                        }
-                      }}
-                      key={comment._id}
-                      as="div"
-                    >
-                      <CommentItem
-                        comment={comment}
-                        handleToggleLikeComment={handleToggleLikeComment}
-                      />
-                    </InView>
-                  ),
+                {videoComments.length === 0 ? (
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      height: '100%',
+                    }}
+                  >
+                    <Typography variant="h5">
+                      {t('NO_COMMENT', { ns: 'translation' })}
+                    </Typography>
+                  </div>
+                ) : (
+                  videoComments.map((comment, idx) =>
+                    idx === 0 ? (
+                      <div key={comment._id} ref={firstCommentRef}>
+                        <CommentItem
+                          comment={comment}
+                          handleToggleLikeComment={handleToggleLikeComment}
+                        />
+                      </div>
+                    ) : (
+                      <InView
+                        threshold={1}
+                        root={commentSectionRef.current}
+                        onChange={(inView) => {
+                          if (inView && idx === videoComments.length - 1) {
+                            setLoadMore(true);
+                          }
+                        }}
+                        key={comment._id}
+                        as="div"
+                      >
+                        <CommentItem
+                          comment={comment}
+                          handleToggleLikeComment={handleToggleLikeComment}
+                        />
+                      </InView>
+                    ),
+                  )
                 )}
 
                 <div style={{ textAlign: 'center' }}>
@@ -473,7 +539,9 @@ function VideoDetail() {
                 <div className="comment__container">
                   <div className="comment__input">
                     <TextField
-                      placeholder="Thêm bình luận"
+                      placeholder={t('ADD_COMMENT_HELPER_TEXT', {
+                        ns: 'translation',
+                      })}
                       value={commentText}
                       variant="outlined"
                       onChange={(e) => setCommentText(e.target.value)}
@@ -491,7 +559,7 @@ function VideoDetail() {
                       color="secondary"
                       onClick={handleComment}
                     >
-                      Đăng
+                      {t('ADD_COMMENT_BUTTON', { ns: 'translation' })}
                     </Button>
                   </div>
                 </div>
@@ -499,10 +567,10 @@ function VideoDetail() {
             </>
           ) : (
             <div className="login__required">
-              <h4>Log in to see comments</h4>
-              <p>Log in to see comments and like the video.</p>
+              <h4>{t('LOGIN_TO_COMMENT_TITLE', { ns: 'translation' })}</h4>
+              <p>{t('LOGIN_TO_COMMENT_DESCRIPTION', { ns: 'translation' })}</p>
               <Button variant="contained" color="secondary">
-                Log in
+                {t('LOGIN_BUTTON', { ns: 'auth' })}
               </Button>
             </div>
           )}

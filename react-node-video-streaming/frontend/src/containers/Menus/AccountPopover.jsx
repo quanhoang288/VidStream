@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
 import PersonOutlinedIcon from '@material-ui/icons/PersonOutlined'; // components
 import MenuPopover from '../../components/MenuPopover/MenuPopover';
@@ -21,6 +22,7 @@ export default function AccountPopover() {
   const [open, setOpen] = useState(false);
 
   const user = useSelector((state) => state.auth.user);
+  const { t } = useTranslation();
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -56,7 +58,7 @@ export default function AccountPopover() {
             <PersonOutlinedIcon />
           </ListItemIcon>
           <ListItemText primaryTypographyProps={{ variant: 'body2' }}>
-            Xem hồ sơ
+            {t('VIEW_PROFILE')}
           </ListItemText>
         </MenuItem>
         <MenuItem
@@ -69,7 +71,7 @@ export default function AccountPopover() {
             <ExitToAppOutlinedIcon />
           </ListItemIcon>
           <ListItemText primaryTypographyProps={{ variant: 'body2' }}>
-            Đăng xuất
+            {t('LOGOUT')}
           </ListItemText>
         </MenuItem>
       </MenuPopover>

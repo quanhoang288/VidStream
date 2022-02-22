@@ -64,16 +64,18 @@ videoController.show = async (req, res) => {
   const { userId } = req.query;
 
   try {
-    const video = await VideoModel.findById(videoId).populate({
-      path: 'uploadedBy',
-      select: '_id username',
-      populate: {
-        path: 'avatar',
-        select: '_id fileName',
-        model: 'Assets',
-      },
-      model: 'Users',
-    });
+    const video = await VideoModel.findById(videoId)
+      .populate({
+        path: 'uploadedBy',
+        select: '_id username',
+        populate: {
+          path: 'avatar',
+          select: '_id fileName',
+          model: 'Assets',
+        },
+        model: 'Users',
+      })
+      .populate('thumbnail', 'fileName', 'Assets');
     if (!userId) {
       return res.status(httpStatus.OK).json({
         video: {
@@ -406,6 +408,8 @@ videoController.getSuggestedList = async (req, res) => {
       }
     : {};
   const suggestedList = await VideoModel.find(query)
+    .sort({ numLikes: -1 })
+    .sort({ numComments: -1 })
     .sort({ createdAt: -1 })
     .limit(10)
     .populate({
@@ -442,7 +446,7 @@ videoController.getSuggestedList = async (req, res) => {
 videoController.getFollowingVideos = async (req, res) => {
   const { userId } = req;
   try {
-    const followingList = await FollowModel.find({ from: userId });
+    const followingList = await FollowModel.find({ following: userId });
     const followingVideos = await VideoModel.find({
       uploadedBy: { $in: followingList.map((follow) => follow.user) },
     })

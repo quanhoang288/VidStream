@@ -29,6 +29,7 @@ videoRoutes.get('/suggestList', asyncWrapper(videoController.getSuggestedList));
 
 videoRoutes.get(
   '/followingList',
+  auth,
   asyncWrapper(videoController.getFollowingVideos),
 );
 

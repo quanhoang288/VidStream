@@ -11,7 +11,7 @@ import MenuPopover from '../../components/MenuPopover/MenuPopover';
 const LANGS = [
   {
     value: 'vn',
-    label: 'Vietnamese',
+    label: 'Tiếng Việt',
     code: 'VN',
   },
   {

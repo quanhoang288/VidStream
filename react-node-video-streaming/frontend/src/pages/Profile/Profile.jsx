@@ -4,6 +4,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { InView } from 'react-intersection-observer';
 import FadeLoader from 'react-spinners/FadeLoader';
+import { useTranslation } from 'react-i18next';
 
 import Main from '../../containers/Main/Main';
 import GalleryItem from '../../components/GalleryItem/GalleryItem';
@@ -22,8 +23,11 @@ function Profile() {
   const [followList, setFollowList] = useState([]);
   const [shouldLoadMore, setLoadMore] = useState(false);
   const [lastVideoId, setLastVideoId] = useState(null);
+  const [firstLoad, setFirstLoad] = useState(true);
 
   const authUser = useSelector((state) => state.auth.user);
+
+  const { t } = useTranslation();
 
   const socket = useWebsocket();
   const dispatch = useDispatch();
@@ -86,6 +90,7 @@ function Profile() {
           const createRes = await notificationApi.create(
             'FOLLOW',
             userIdToToggle,
+            null,
             authUser.token,
           );
           socket?.emit('SEND_NOTIFICATION', createRes.data.notification);
@@ -172,21 +177,26 @@ function Profile() {
     if (userVideos.length > 0) {
       const lastVideo = userVideos[userVideos.length - 1];
       setLastVideoId(lastVideo._id);
+      setFirstLoad(false);
     }
   }, [userVideos]);
 
   useEffect(() => {
     console.log('should load more: ', shouldLoadMore);
-    if (shouldLoadMore) {
+    if (shouldLoadMore && !firstLoad) {
       handleLoadMore(userId, lastVideoId);
     }
-  }, [userId, shouldLoadMore, lastVideoId]);
+  }, [userId, shouldLoadMore, lastVideoId, firstLoad]);
 
   return (
     <Main>
       {curFollowModal && (
         <FollowList
-          title={curFollowModal === 'following' ? 'Following' : 'Followers'}
+          title={
+            curFollowModal === 'following'
+              ? t('FOLLOWING_BUTTON')
+              : t('FOLLOW_BUTTON')
+          }
           users={followList}
           handleClose={() => setCurFollowModal(null)}
           isFollowingList={curFollowModal === 'following'}
@@ -201,9 +211,10 @@ function Profile() {
               src={
                 userInfo.avatar
                   ? `${ASSET_BASE_URL}/${userInfo.avatar.fileName}`
-                  : null
+                  : `${ASSET_BASE_URL}/no_avatar.jpg`
               }
               width={200}
+              height={200}
               alt="Profile"
             />
           </div>
@@ -216,7 +227,7 @@ function Profile() {
                 className="btn profile__edit__btn"
                 onClick={() => history.push('/account/edit')}
               >
-                Edit Profile
+                {t('EDIT_PROFILE_BUTTON')}
               </button>
             ) : (
               <Button
@@ -226,7 +237,9 @@ function Profile() {
                 onClick={handleToggleFollowCurrentUser}
                 style={{ marginLeft: '1rem' }}
               >
-                {userInfo.isFollowing ? 'Following' : 'Follow'}
+                {userInfo.isFollowing
+                  ? t('FOLLOWING_BUTTON')
+                  : t('FOLLOW_BUTTON')}
               </Button>
             )}
           </div>
@@ -240,16 +253,6 @@ function Profile() {
                 videos
               </li>
               <li
-                // className={
-                //   userInfo.followers &&
-                //   userInfo.followers.length === 0 &&
-                //   'auto__cursor'
-                // }
-                // onClick={() => {
-                //   if (userInfo.followers && userInfo.followers.length > 0) {
-                //     setCurFollowModal('followers');
-                //   }
-                // }}
                 className={
                   (!authUser ||
                     !userInfo.numFollowers ||
@@ -270,19 +273,9 @@ function Profile() {
                   {/* {userInfo.followers ? userInfo.followers.length : null} */}
                   {userInfo.numFollowers || 0}
                 </span>{' '}
-                followers
+                {t('FOLLOWERS')}
               </li>
               <li
-                // className={
-                //   userInfo.following &&
-                //   userInfo.following.length === 0 &&
-                //   'auto__cursor'
-                // }
-                // onClick={() => {
-                //   if (userInfo.following && userInfo.following.length > 0) {
-                //     setCurFollowModal('following');
-                //   }
-                // }}
                 className={
                   (!authUser ||
                     !userInfo.numFollowing ||
@@ -303,7 +296,7 @@ function Profile() {
                   {/* {userInfo.following ? userInfo.following.length : null} */}
                   {userInfo.numFollowing || 0}
                 </span>{' '}
-                following
+                {t('FOLLOWING')}
               </li>
             </ul>
           </div>
@@ -322,8 +315,10 @@ function Profile() {
                   return (
                     <InView
                       threshold={1}
+                      rootMargin="200px 0px"
                       onChange={(inView) => {
                         if (inView) {
+                          console.log('inside viewport: ', index);
                           setLoadMore(true);
                         }
                       }}

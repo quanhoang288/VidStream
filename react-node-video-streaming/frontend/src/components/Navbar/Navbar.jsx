@@ -45,7 +45,7 @@ export default function Navbar() {
               <SearchBar />
             </Grid>
             <Grid item xs={2} />
-            <Grid item>
+            <Grid item style={{ flex: 1 }}>
               <div className="icon__group">
                 {user ? (
                   <>
@@ -60,14 +60,18 @@ export default function Navbar() {
                     <AccountPopover />
                   </>
                 ) : (
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    size="medium"
-                    onClick={() => dispatch(showModal())}
-                  >
-                    {t('LOGIN_BUTTON', { ns: 'auth' })}
-                  </Button>
+                  <>
+                    <LanguagePopover />
+                    <Grid item xs={1} />
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      size="medium"
+                      onClick={() => dispatch(showModal())}
+                    >
+                      {t('LOGIN_BUTTON', { ns: 'auth' })}
+                    </Button>
+                  </>
                 )}
               </div>
             </Grid>

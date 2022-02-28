@@ -3,6 +3,7 @@ const userController = require('../controllers/Users');
 const { asyncWrapper } = require('../utils/asyncWrapper');
 const auth = require('../middlewares/auth');
 const imageUpload = require('../middlewares/imageUpload');
+const pagination = require('../middlewares/pagination');
 
 const userRoutes = express.Router();
 
@@ -20,9 +21,15 @@ userRoutes.post(
   imageUpload.single('avatar'),
   asyncWrapper(userController.changeProfile),
 );
-userRoutes.get('/:id', auth, asyncWrapper(userController.show));
+userRoutes.get('/suggestion', asyncWrapper(userController.getSuggestedList));
 
-userRoutes.get('/:id/videos', asyncWrapper(userController.getVideoGallery));
+userRoutes.get('/:id', asyncWrapper(userController.show));
+
+userRoutes.get(
+  '/:id/videos',
+  pagination,
+  asyncWrapper(userController.getVideoGallery),
+);
 
 userRoutes.get(
   '/:id/followers',

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import Modal from '../../components/Modal/Modal';
 import LoginForm from '../../components/LoginForm/LoginForm';
 import RegisterForm from '../../components/RegisterForm/RegisterForm';
@@ -29,6 +30,8 @@ function AuthHandler() {
   const authenticatedUser = useSelector((state) => state.auth.user);
 
   const dispatch = useDispatch();
+
+  const { t } = useTranslation(['auth']);
 
   const isValidCredentials = () => {
     const { username, password } = credentials;
@@ -186,7 +189,11 @@ function AuthHandler() {
     <Modal
       isModalVisible={isModalVisible}
       handleClose={handleCloseModal}
-      title={curModal === LOGIN_MODAL ? 'Đăng nhập' : 'Đăng ký'}
+      title={
+        curModal === LOGIN_MODAL
+          ? t('LOGIN_BUTTON', { ns: 'auth' })
+          : t('REGISTER_BUTTON', { ns: 'auth' })
+      }
     >
       {curModal === LOGIN_MODAL ? (
         <LoginForm

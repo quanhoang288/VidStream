@@ -47,6 +47,12 @@ const authReducer = (state = initialState, action) => {
         error: action.payload,
       };
 
+    case authActionTypes.UPDATE_INFO:
+      return {
+        ...initialState,
+        user: action.payload,
+      };
+
     case authActionTypes.LOGOUT:
       return initialState;
 

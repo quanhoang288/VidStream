@@ -21,6 +21,10 @@ const commentSchema = new mongoose.Schema({
       ref: 'Comments',
     },
   ],
+  numLikes: {
+    type: Number,
+    default: 0,
+  },
 });
 
 commentSchema.set('timestamps', true);

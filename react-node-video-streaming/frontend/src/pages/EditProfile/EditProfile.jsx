@@ -8,7 +8,8 @@ import {
   Button,
 } from '@material-ui/core';
 import './EditProfile.css';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { authActions } from '../../redux/actions';
 import Main from '../../containers/Main/Main';
 import Toast from '../../components/Toast/Toast';
 import { userApi } from '../../apis';
@@ -35,6 +36,7 @@ function EditProfile() {
   const [editErrorMessage, setEditErrorMessage] = useState(null);
   const [isConfirmModalVisible, setConfirmModalVisible] = useState(false);
 
+  const dispatch = useDispatch();
   const authUser = useSelector((state) => state.auth.user);
 
   const avatarInputRef = useRef();
@@ -149,6 +151,15 @@ function EditProfile() {
           if (isConfirmModalVisible) {
             setConfirmModalVisible(false);
           }
+          dispatch(
+            authActions.updateAuthInfo({
+              ...authUser,
+              avatar: {
+                ...authUser.avatar,
+                fileName: updateResult.data.avatar.fileName,
+              },
+            }),
+          );
           setEditSuccessMessage('Update profile image successfully');
         } catch (error) {
           console.log(error);

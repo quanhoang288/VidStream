@@ -6,7 +6,13 @@ export const authActionTypes = {
   REGISTER_FAILURE: 'REGISTER_FAILURE',
   REGISTER_SUCCESS: 'REGISTER_SUCCESS',
   LOGOUT: 'LOGOUT',
+  UPDATE_INFO: 'UPDATE_INFO',
 };
+
+const updateAuthInfo = (newInfo) => ({
+  type: authActionTypes.UPDATE_INFO,
+  payload: newInfo,
+});
 
 const registerRequest = () => ({
   type: authActionTypes.REGISTER_REQUEST,
@@ -48,4 +54,5 @@ export {
   registerRequest,
   registerFailure,
   registerSuccess,
+  updateAuthInfo,
 };

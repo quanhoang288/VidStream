@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Button, Link, TextField } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 import Layout from '../../containers/Layout/Layout';
 import { REGISTER_MODAL } from '../../constants';
 
@@ -12,6 +13,8 @@ function RegisterForm(props) {
     handleTextChange,
   } = props;
 
+  const { t } = useTranslation(['auth']);
+
   return (
     <Layout>
       <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
@@ -20,7 +23,7 @@ function RegisterForm(props) {
           required
           fullWidth
           id="username"
-          label="Tài khoản"
+          label={t('USERNAME', { ns: 'auth' })}
           name="username"
           value={registerInfo.username}
           onChange={(e) =>
@@ -35,7 +38,7 @@ function RegisterForm(props) {
           required
           fullWidth
           name="password"
-          label="Mật khẩu"
+          label={t('PASSWORD', { ns: 'auth' })}
           type="password"
           id="password"
           value={registerInfo.password}
@@ -50,7 +53,7 @@ function RegisterForm(props) {
           required
           fullWidth
           name="confirmPassword"
-          label="Xác nhận mật khẩu"
+          label={t('CONFIRM_PASSWORD', { ns: 'auth' })}
           type="password"
           id="confirm-password"
           value={registerInfo.confirmPassword}
@@ -67,11 +70,11 @@ function RegisterForm(props) {
           color="secondary"
           className="submit__btn"
         >
-          Đăng ký
+          {t('REGISTER_BUTTON', { ns: 'auth' })}
         </Button>
         <div className="text__center">
           <Link href="#" variant="body2" onClick={handleLoginClick}>
-            Đã có tài khoản? Đăng nhập
+            {t('ALREADY_HAS_ACCOUNT', { ns: 'auth' })}
           </Link>
         </div>
       </Box>

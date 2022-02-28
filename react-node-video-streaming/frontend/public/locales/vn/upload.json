@@ -1,0 +1,21 @@
+{
+  "EDIT_TITLE": "Chỉnh sửa bài đăng",
+  "DELETE_TITLE": "Xóa bài đăng",
+  "DELETE_DESCRIPTION": "Bài đăng sẽ bị xóa khỏi tường của bạn",
+  "UPLOAD_TITLE": "Tải video lên",
+  "UPLOAD_SUBTITLE": "Đăng video vào tài khoản của bạn",
+  "UPLOAD_SECTION_TITLE": "Chọn video để tải lên",
+  "VIDEO_FORMAT": "MP4 hoặc WebM",
+  "VIDEO_DURATION": "Tối đa 5 phút",
+  "VIDEO_SIZE": "Nhỏ hơn 2GB",
+  "VIDEO_SELECT_BUTTON": "Chọn video",
+  "VIDEO_SELECT_ANOTHER_BUTTON": "Chọn video khác",
+  "DESCRIPTION": "Chú thích",
+  "RESTRICTION_TITLE": "Ai có thể xem video này",
+  "RESTRICTION_PUBLIC": "Công khai",
+  "RESTRICTION_PRIVATE": "Riêng tư",
+  "UPLOAD_BUTTON": "Đăng",
+  "CANCEL_BUTTON": "Hủy",
+  "DELETE_BUTTON": "Xóa",
+  "SAVE_BUTTON": "Lưu"
+}

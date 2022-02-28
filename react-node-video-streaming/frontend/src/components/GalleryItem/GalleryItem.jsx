@@ -23,7 +23,7 @@ function GalleryItem({ video }) {
         <ul>
           <li className="gallery__item__likes">
             <FavoriteIcon />
-            {video.likes.length}
+            {video.numLikes}
           </li>
           <li className="gallery__item__comments">
             <ChatBubbleIcon /> {video.numComments}

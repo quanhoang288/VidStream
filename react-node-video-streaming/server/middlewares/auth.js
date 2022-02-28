@@ -4,6 +4,12 @@ const UserModel = require('../models/Users');
 const httpStatus = require('../utils/httpStatus');
 
 const auth = async (req, res, next) => {
+  if (!req.headers.authorization) {
+    return res.status(httpStatus.UNAUTHORIZED).json({
+      message: 'UNAUTHORIZED',
+    });
+  }
+
   try {
     const authorization = req.headers.authorization.split(' ')[1];
     let decoded;

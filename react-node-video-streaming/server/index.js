@@ -3,8 +3,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const io = require('socket.io')(3000);
+const { Server } = require('socket.io');
 const path = require('path');
+const http = require('http');
 
 const mainRouter = require('./routes');
 const { MONGO_URI, PORT } = require('./configs');
@@ -45,13 +46,29 @@ app.use((err, req, res, next) => {
   res.status(400).json({ error: err.message });
 });
 
-app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}!`);
+const httpServer = http.createServer(app);
+// Socket.io realtime
+const io = new Server(httpServer, {
+  cors: {
+    origin: '*',
+  },
 });
 
-// Socket.io realtime
 io.on('connection', (socket) => {
+  console.log('a user connected', socket.id);
+
+  socket.on('SEND_NOTIFICATION', (notification) => {
+    console.log('new noti: ', notification);
+    socket.broadcast.emit('NEW_NOTIFICATION', notification);
+  });
+
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
+});
+
+app.set('io', io);
+
+httpServer.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}!`);
 });

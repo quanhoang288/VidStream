@@ -1,12 +1,16 @@
 .video__detail__container {
   display: flex;
   flex-direction: row;
+  height: 100vh;
 }
 
 .video__player__container {
+  /* margin: 60px 0px;
   width: 70%;
-  height: 100vh;
-  position: relative;
+  position: relative; */
+  padding: 100px 0px;
+  height: 100%;
+  background: rgb(248, 248, 248);
 }
 
 .video__meta__info {
@@ -64,6 +68,7 @@
 }
 
 .comment__section {
+  flex: 1;
   height: 70vh;
   overflow-y: scroll;
   background-color: rgb(248, 248, 248);
@@ -101,6 +106,7 @@
   font-weight: bold;
   font-size: 18px;
   line-height: 25px;
+  color: #000;
 }
 
 .comment__item__content .comment__text__content {

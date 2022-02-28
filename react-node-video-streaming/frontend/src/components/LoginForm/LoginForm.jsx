@@ -7,6 +7,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import Layout from '../../containers/Layout/Layout';
 import { LOGIN_MODAL } from '../../constants';
 import './LoginForm.css';
@@ -21,6 +22,8 @@ function LoginForm(props) {
   } = props;
   const isLoggingIn = useSelector((state) => state.auth.isLoggingIn);
 
+  const { t } = useTranslation(['auth']);
+
   return (
     <Layout>
       <Box component="form" onSubmit={handleSubmit} noValidate>
@@ -28,7 +31,7 @@ function LoginForm(props) {
           margin="normal"
           fullWidth
           id="username"
-          label="Tài khoản"
+          label={t('USERNAME', { ns: 'auth' })}
           name="username"
           value={credentials.username}
           onChange={(e) =>
@@ -40,7 +43,7 @@ function LoginForm(props) {
           margin="normal"
           fullWidth
           name="password"
-          label="Mật khẩu"
+          label={t('PASSWORD', { ns: 'auth' })}
           type="password"
           id="password"
           value={credentials.password}
@@ -58,12 +61,12 @@ function LoginForm(props) {
           sx={{ mt: 3, mb: 2 }}
           disabled={submitButtonDisabled}
         >
-          {isLoggingIn && <CircularProgress />}
-          {!isLoggingIn && 'Đăng nhập'}
+          {isLoggingIn && <CircularProgress size={20} color="inherit" />}
+          {!isLoggingIn && t('LOGIN_BUTTON', { ns: 'auth' })}
         </Button>
         <div className="text__center">
           <Link href="#" variant="body2" onClick={handleRegisterClick}>
-            Chưa có tài khoản? Đăng ký
+            {t('NOT_REGISTER_LINK', { ns: 'auth' })}
           </Link>
         </div>
       </Box>

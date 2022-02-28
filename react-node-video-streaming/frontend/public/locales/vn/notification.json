@@ -1,0 +1,6 @@
+{
+  "NOTIFICATION_LIKE_VIDEO": "{{username}} đã thích video của bạn",
+  "NOTIFICATION_COMMENT": "{{username}} đã bình luận vào video của bạn",
+  "NOTIFICATION_FOLLOW": "{{username}} đã theo dõi bạn",
+  "NO_NOTIFICATIONS": "Bạn chưa có thông báo nào"
+}
